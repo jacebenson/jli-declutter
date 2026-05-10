@@ -26,6 +26,28 @@ Open the extension options page to enable or disable:
 
 Settings are stored locally with `chrome.storage.local` under `jliDeclutterConfig`.
 
+## Privacy 
+
+See `index.html` for the homepage and privacy policy. `privacy.html` redirects to the privacy section on that same page. In short: LinkedIn page content is processed locally only to hide or collapse matching clutter. Settings are stored locally and no data is transmitted to the developer or any external server.
+
+## Chrome Web Store Disclosures
+
+Single purpose:
+
+JLI LinkedIn Declutter locally hides and collapses distracting LinkedIn feed and notification clutter so users can browse LinkedIn with less noise.
+
+Storage permission justification:
+
+The `storage` permission is used to save local extension settings, such as whether feed clutter cleanup and notification clutter cleanup are enabled. Settings are stored with `chrome.storage.local` under `jliDeclutterConfig` and are not transmitted to the developer or any external server.
+
+Host permission justification:
+
+The extension needs access to `https://www.linkedin.com/*` so it can run on LinkedIn pages, inspect page content locally, and hide or collapse clutter such as promoted posts, sponsored content, suggested posts, recommendation modules, reaction notifications, and analytics notifications. Access is limited to LinkedIn.
+
+Remote code:
+
+No. The extension does not load or execute remote code. All JavaScript, CSS, and assets are packaged with the extension.
+
 ## Install Locally
 
 1. Open `chrome://extensions`.
@@ -47,8 +69,10 @@ The output is written to `dist/jli-declutter-v<package.version>.zip`, for exampl
 ## Project Layout
 
 - `manifest.json`: Manifest V3 config.
+- `index.html`: Homepage and privacy policy page for publishing.
 - `assets/`: Extension icon source and PNG assets.
 - `options.html`, `options.css`, `options.js`: Settings UI.
+- `privacy.html`: Redirect to the privacy section of `index.html`.
 - `content.css`: LinkedIn page styles for hidden and collapsed clutter.
 - `content/core.js`: Shared helpers and local config loading.
 - `content/main.js`: Content-script coordinator.
