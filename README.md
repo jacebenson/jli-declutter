@@ -97,6 +97,18 @@ Message templates support these variables:
 4. Select this `jli` directory.
 5. Refresh LinkedIn.
 
+## Build Zip
+
+Create a distributable zip from this directory:
+
+```sh
+npm run build
+```
+
+The output is written to `dist/jli-v<package.version>.zip`, for example `dist/jli-v1.0.0.zip`.
+
+The zip version comes from `package.json`. The build script packages only the extension runtime files and excludes repo/build files such as `.git`, `node_modules`, `dist`, `package.json`, and `scripts/`.
+
 ## Project Layout
 
 - `manifest.json`: Manifest V3 config.
@@ -119,17 +131,7 @@ The content scripts are manifest-loaded in dependency order and share a single `
 Run syntax checks from this directory:
 
 ```sh
-node --check content/core.js
-node --check content/features/clean-feed.js
-node --check content/features/notifications.js
-node --check content/features/mentions.js
-node --check content/features/outreach.js
-node --check content/features/shortcuts.js
-node --check content/main.js
-node --check popup.js
-node --check options.js
-node --check background.js
-node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
+npm run check
 ```
 
 ## Notes

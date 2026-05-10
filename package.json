@@ -1,0 +1,14 @@
+{
+  "name": "jli",
+  "version": "1.0.0",
+  "description": "Local-only Chrome extension for reducing LinkedIn clutter and tracking manual follow-up TODOs.",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "background.js",
+  "scripts": {
+    "check": "node --check content/core.js && node --check content/features/clean-feed.js && node --check content/features/notifications.js && node --check content/features/mentions.js && node --check content/features/outreach.js && node --check content/features/shortcuts.js && node --check content/main.js && node --check popup.js && node --check options.js && node --check background.js && node --check scripts/build-zip.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))\"",
+    "zip": "node scripts/build-zip.js",
+    "build": "npm run check && npm run zip"
+  }
+}
