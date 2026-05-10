@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "JLI LinkedIn Cleaner",
+  "description": "Locally hides LinkedIn feed clutter like the right rail, ads, and promoted posts.",
+  "version": "0.1.0",
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "css": ["content.css"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
