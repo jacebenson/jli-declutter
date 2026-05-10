@@ -1,0 +1,100 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: Canvas;
+  color: CanvasText;
+}
+
+main {
+  width: min(840px, calc(100vw - 32px));
+  margin: 32px auto;
+}
+
+header {
+  margin-bottom: 24px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+p {
+  color: color-mix(in srgb, CanvasText 70%, Canvas 30%);
+}
+
+.watcher-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid color-mix(in srgb, CanvasText 18%, Canvas 82%);
+  border-radius: 12px;
+  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
+}
+
+.watcher-heading {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 650;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, CanvasText 24%, Canvas 76%);
+  border-radius: 8px;
+  background: Canvas;
+  color: CanvasText;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #0a66c2;
+  color: #fff;
+  cursor: pointer;
+  font: 650 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.remove-watcher {
+  justify-self: start;
+  background: color-mix(in srgb, CanvasText 12%, Canvas 88%);
+  color: CanvasText;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+#status {
+  min-height: 1.4em;
+  font-weight: 650;
+}
+
+@media (max-width: 640px) {
+  .watcher-heading {
+    grid-template-columns: 1fr;
+  }
+}

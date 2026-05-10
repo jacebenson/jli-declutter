@@ -16,6 +16,14 @@ This version collapses:
 - Feed posts labeled `Promoted`.
 - Feed posts/media labeled `Sponsored Content`.
 
+This version tracks:
+
+- Watched profile URLs and terms configured in extension options.
+- Matching feed posts, comments, and notifications.
+- Local TODO statuses: `Mention`, `Need reply`, `Done`, and `Dismissed`.
+
+The LinkedIn header gets a `TODOs` button showing open tracked items. Click it to review stored items and update status.
+
 It does not call LinkedIn APIs, block network requests, click buttons, post content, send messages, or automate account actions.
 
 ## Install Locally
@@ -31,3 +39,5 @@ It does not call LinkedIn APIs, block network requests, click buttons, post cont
 LinkedIn changes its DOM frequently. This extension avoids generated class names and uses visible text, ARIA labels, iframe titles, and news URLs where possible.
 
 If useful content gets hidden, inspect the hidden element for `data-jli-reason` to see which cleanup rule matched it.
+
+Watcher config and TODO state are stored locally with `chrome.storage.local`. No LinkedIn API calls are made.

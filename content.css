@@ -107,6 +107,55 @@ html.jli-expanded-layout [role="main"] {
   padding: 8px;
 }
 
+.jli-mention-candidate {
+  outline: 2px solid color-mix(in srgb, #0a66c2 58%, transparent) !important;
+  outline-offset: 2px !important;
+}
+
+.jli-mention-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  margin: 8px;
+  padding: 8px;
+  border: 1px solid rgba(10, 102, 194, 0.28);
+  border-radius: 10px;
+  background: color-mix(in srgb, #0a66c2 9%, Canvas 91%);
+  color: CanvasText;
+  font: 650 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.jli-mention-label {
+  margin-right: auto;
+}
+
+.jli-mention-controls button {
+  border: 1px solid rgba(10, 102, 194, 0.32);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: Canvas;
+  color: CanvasText;
+  cursor: pointer;
+  font: inherit;
+}
+
+.jli-mention-controls button[aria-pressed="true"] {
+  background: #0a66c2;
+  color: #fff;
+}
+
+.jli-mention-controls[data-jli-mention-status="done"],
+.jli-mention-controls[data-jli-mention-status="dismissed"] {
+  opacity: 0.72;
+}
+
+.jli-mention-candidate:has(.jli-mention-controls[data-jli-mention-status="done"]),
+.jli-mention-candidate:has(.jli-mention-controls[data-jli-mention-status="dismissed"]) {
+  outline-color: color-mix(in srgb, CanvasText 18%, transparent) !important;
+}
+
 iframe[title="advertisement"],
 iframe[componentkey*="feed_ad"] {
   display: none !important;

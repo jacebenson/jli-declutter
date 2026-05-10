@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JLI TODOs</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>TODOs</h1>
+          <p id="summary">Loading...</p>
+        </div>
+        <button id="clear-all" type="button">Clear all</button>
+      </header>
+
+      <section id="todos" aria-live="polite"></section>
+    </main>
+
+    <template id="todo-template">
+      <article class="todo-card">
+        <div class="todo-heading">
+          <strong class="todo-title"></strong>
+          <span class="todo-source"></span>
+        </div>
+        <p class="todo-meta"></p>
+        <p class="todo-preview"></p>
+        <div class="todo-actions">
+          <a class="todo-open" target="_blank" rel="noreferrer">Open</a>
+          <button type="button" data-status="need-reply">Need reply</button>
+          <button type="button" data-status="done">Done</button>
+          <button type="button" data-status="dismissed">Dismiss</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

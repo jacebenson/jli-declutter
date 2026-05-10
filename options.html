@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JLI Watchers</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>JLI Watchers</h1>
+        <p>Configure profile URLs and terms to flag LinkedIn posts or comments that may need a reply.</p>
+      </header>
+
+      <section id="watchers" aria-live="polite"></section>
+
+      <div class="actions">
+        <button id="add-watcher" type="button">Add watcher</button>
+        <button id="save" type="button">Save</button>
+      </div>
+
+      <p id="status" role="status"></p>
+    </main>
+
+    <template id="watcher-template">
+      <article class="watcher-card">
+        <div class="watcher-heading">
+          <label>
+            Label
+            <input class="watcher-label" type="text" placeholder="Jace Benson">
+          </label>
+          <label>
+            Type
+            <select class="watcher-kind">
+              <option value="person">person</option>
+              <option value="product">product</option>
+              <option value="company">company</option>
+              <option value="other">other</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          Profile URLs, one per line
+          <textarea class="watcher-profile-urls" rows="3" placeholder="https://www.linkedin.com/in/jacebenson/"></textarea>
+        </label>
+        <label>
+          Watch terms, one per line
+          <textarea class="watcher-terms" rows="4" placeholder="Jace Benson&#10;Product Name"></textarea>
+        </label>
+        <button class="remove-watcher" type="button">Remove</button>
+      </article>
+    </template>
+
+    <script src="options.js"></script>
+  </body>
+</html>

@@ -3,11 +3,32 @@
   const HIDDEN_CLASS = "jli-hidden";
   const COLLAPSED_ATTRIBUTE = "data-jli-collapsed";
   const EXPANDED_LAYOUT_CLASS = "jli-expanded-layout";
+  const CONFIG_KEY = "jliWatcherConfig";
+  const MENTIONS_KEY = "jliMentionItems";
+  const JLI_UI_SELECTOR = ".jli-mention-controls, .jli-todo-overlay, .jli-todo-left-rail, .jli-todo-floating, .jli-todo-nav";
   const CLEANUP_DELAY_MS = 150;
+  const AUTO_LOAD_MORE_DELAY_MS = 250;
+  const AUTO_LOAD_MORE_THROTTLE_MS = 2500;
+  const AUTO_LOAD_MORE_BOTTOM_DISTANCE_PX = 1200;
   const MAX_ANCESTOR_DEPTH = 18;
+
+  const DEFAULT_CONFIG = {
+    watchers: [
+      {
+        label: "Jace Benson",
+        kind: "person",
+        profileUrls: ["https://www.linkedin.com/in/jacebenson/"],
+        terms: ["Jace Benson"]
+      }
+    ]
+  };
 
   let cleanupTimer = null;
   let currentUrl = window.location.href;
+  let watcherConfig = DEFAULT_CONFIG;
+  let mentionItems = {};
+  let autoLoadMoreTimer = null;
+  let lastAutoLoadMoreAt = 0;
 
   const exactTextSelectors = [
     "p",
@@ -57,6 +78,34 @@
 
   function getText(element) {
     return (element?.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function getCleanText(element) {
+    const clone = element?.cloneNode?.(true);
+    if (!clone) {
+      return "";
+    }
+
+    clone.querySelectorAll?.(JLI_UI_SELECTOR).forEach((node) => node.remove());
+    return getText(clone);
+  }
+
+  function isInsideJliUi(element) {
+    return Boolean(element?.matches?.(JLI_UI_SELECTOR) || element?.closest?.(JLI_UI_SELECTOR));
+  }
+
+  function getNonJliLinks(element) {
+    return [...element?.querySelectorAll?.("a[href]") || []].filter((link) => !isInsideJliUi(link));
+  }
+
+  function isElementVisible(element) {
+    const rect = element?.getBoundingClientRect?.();
+    if (!rect || rect.width <= 0 || rect.height <= 0) {
+      return false;
+    }
+
+    const style = window.getComputedStyle(element);
+    return style.visibility !== "hidden" && style.display !== "none";
   }
 
   function hasExactText(element, text) {
@@ -460,7 +509,624 @@
     });
   }
 
+  async function loadWatcherState() {
+    if (!chrome?.storage?.local) {
+      return;
+    }
+
+    const stored = await chrome.storage.local.get([CONFIG_KEY, MENTIONS_KEY]);
+    watcherConfig = normalizeConfig(stored[CONFIG_KEY] || DEFAULT_CONFIG);
+    mentionItems = stored[MENTIONS_KEY] || {};
+    await pruneReactionMentionItems();
+  }
+
+  function normalizeConfig(config) {
+    const watchers = Array.isArray(config?.watchers) ? config.watchers : [];
+
+    return {
+      watchers: watchers.map((watcher) => ({
+        label: String(watcher.label || "Untitled watcher").trim(),
+        kind: ["person", "product", "company", "other"].includes(watcher.kind) ? watcher.kind : "other",
+        profileUrls: [...new Set((watcher.profileUrls || []).map(normalizeProfileUrl).filter(Boolean))],
+        terms: [...new Set((watcher.terms || []).map((term) => String(term).trim()).filter(Boolean))]
+      }))
+    };
+  }
+
+  function normalizeProfileUrl(value) {
+    const text = String(value || "").trim();
+    if (!text) {
+      return "";
+    }
+
+    try {
+      const url = new URL(text, "https://www.linkedin.com");
+      url.hash = "";
+      url.search = "";
+      return url.href.replace(/\/$/, "/");
+    } catch {
+      return text;
+    }
+  }
+
+  function findWatcherMatch(element) {
+    if (!element || isInsideJliUi(element) || !watcherConfig.watchers.length) {
+      return null;
+    }
+
+    for (const watcher of watcherConfig.watchers) {
+      const profileMatch = findProfileUrlMatch(element, watcher);
+      if (profileMatch) {
+        return profileMatch;
+      }
+
+      const termMatch = findTermMatch(element, watcher);
+      if (termMatch) {
+        return termMatch;
+      }
+    }
+
+    return null;
+  }
+
+  function findProfileUrlMatch(element, watcher) {
+    for (const link of getNonJliLinks(element)) {
+      const href = normalizeProfileUrl(link.href);
+      const matchedValue = watcher.profileUrls.find((profileUrl) => href === profileUrl || href.startsWith(profileUrl));
+
+      if (matchedValue) {
+        return {
+          watcher,
+          matchType: "profile-url",
+          matchedValue
+        };
+      }
+    }
+
+    return null;
+  }
+
+  function findTermMatch(element, watcher) {
+    const text = getCleanText(element);
+
+    for (const term of watcher.terms) {
+      if (matchesTerm(text, term)) {
+        return {
+          watcher,
+          matchType: term.trim().includes(" ") ? "exact-term" : "word-term",
+          matchedValue: term
+        };
+      }
+    }
+
+    return null;
+  }
+
+  function matchesTerm(text, term) {
+    const cleanTerm = term.trim();
+    if (!cleanTerm) {
+      return false;
+    }
+
+    const escaped = cleanTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = cleanTerm.includes(" ")
+      ? new RegExp(escaped, "i")
+      : new RegExp(`(^|\\P{L})${escaped}(?=$|\\P{L})`, "iu");
+
+    return pattern.test(text);
+  }
+
+  function getPostActivityId(post) {
+    const activityLink = [...post.querySelectorAll?.('a[href*="/feed/update/urn:li:activity:"]') || []]
+      .map((link) => link.href.match(/urn:li:activity:\d+/)?.[0])
+      .find(Boolean);
+
+    return activityLink || window.location.href.match(/urn:li:activity:\d+/)?.[0] || "unknown-post";
+  }
+
+  function getCommentId(comment) {
+    const componentKey = comment.getAttribute("componentkey") || comment.querySelector?.('[componentkey^="replaceableComment_urn:li:comment:"]')?.getAttribute("componentkey") || "";
+    return componentKey.replace(/^replaceableComment_/, "") || "unknown-comment";
+  }
+
+  function getActorName(container) {
+    const profileLink = getNonJliLinks(container)
+      .filter((link) => link.href.includes("/in/"))
+      .map(getProfileLinkLabel)
+      .find((text) => text && !["Open", "Status is offline"].includes(text));
+
+    return profileLink || "Unknown";
+  }
+
+  function getProfileLinkLabel(link) {
+    const ariaLabel = link.getAttribute("aria-label") || "";
+    const ariaName = ariaLabel.match(/^View (.+?)(?:'s|’s) profile\.?$/i)?.[1];
+    const imageName = link.querySelector?.("img[alt]")?.getAttribute("alt");
+    const textName = getCleanText(link).replace(/\bStatus is offline\b/gi, "").trim();
+
+    return ariaName || imageName || textName;
+  }
+
+  function getPreviewText(container) {
+    if (isNotificationCard(container)) {
+      return getNotificationHeadlineText(container).slice(0, 220);
+    }
+
+    return getCleanText(container).slice(0, 220);
+  }
+
+  function isNotificationCard(element) {
+    return Boolean(element?.matches?.('[data-view-name="notification-card-container"], .nt-card') || element?.querySelector?.('[data-view-name="notification-card-container"], .nt-card__headline'));
+  }
+
+  function getNotificationHeadlineText(notification) {
+    const headline = notification.querySelector?.(".nt-card__headline") || notification;
+    const clone = headline.cloneNode?.(true);
+    if (!clone) {
+      return "";
+    }
+
+    clone.querySelectorAll?.(`${JLI_UI_SELECTOR}, .visually-hidden`).forEach((node) => node.remove());
+
+    return getText(clone)
+      .replace(/\bStatus is offline\b/gi, "")
+      .replace(/\bUnread notification\.\b/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  async function pruneReactionMentionItems() {
+    const nextItems = Object.fromEntries(
+      Object.entries(mentionItems).filter(([, item]) => !isStoredReactionNotification(item))
+    );
+
+    if (Object.keys(nextItems).length === Object.keys(mentionItems).length) {
+      return;
+    }
+
+    mentionItems = nextItems;
+    await chrome.storage.local.set({ [MENTIONS_KEY]: mentionItems });
+  }
+
+  function isStoredReactionNotification(item) {
+    if (item?.source !== "notification") {
+      return false;
+    }
+
+    return isReactionText(`${item.previewText || ""} ${item.preview || ""}`);
+  }
+
+  async function saveMentionItem(item) {
+    const existing = mentionItems[item.id] || {};
+    const nextStatus = existing.status || item.status || "new";
+    const unchanged = existing.id && [
+      "source",
+      "status",
+      "matchedWatcherLabel",
+      "matchedKind",
+      "matchType",
+      "matchedValue",
+      "actorName",
+      "previewText",
+      "url",
+      "pageUrl"
+    ].every((key) => existing[key] === (key === "status" ? nextStatus : item[key]));
+
+    if (unchanged) {
+      return existing;
+    }
+
+    const next = {
+      ...existing,
+      ...item,
+      status: nextStatus,
+      createdAt: existing.createdAt || Date.now(),
+      updatedAt: Date.now()
+    };
+
+    mentionItems[item.id] = next;
+
+    if (chrome?.storage?.local) {
+      await chrome.storage.local.set({ [MENTIONS_KEY]: mentionItems });
+    }
+
+    return next;
+  }
+
+  async function setMentionStatus(id, status) {
+    const item = mentionItems[id];
+    if (!item) {
+      return;
+    }
+
+    mentionItems[id] = {
+      ...item,
+      status,
+      updatedAt: Date.now()
+    };
+
+    await chrome.storage.local.set({ [MENTIONS_KEY]: mentionItems });
+    document.querySelectorAll(`[data-jli-mention-id="${CSS.escape(id)}"]`).forEach((element) => {
+      renderMentionStatus(element, mentionItems[id]);
+    });
+  }
+
+  async function clearAllMentionItems() {
+    mentionItems = {};
+
+    document.querySelectorAll(".jli-mention-controls").forEach((element) => element.remove());
+    document.querySelectorAll(".jli-mention-candidate").forEach((element) => {
+      element.classList.remove("jli-mention-candidate");
+      element.removeAttribute("data-jli-mention-source");
+    });
+
+    await chrome.storage.local.set({ [MENTIONS_KEY]: mentionItems });
+  }
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"]/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;"
+    }[char]));
+  }
+
+  function detectMentionCandidates() {
+    detectMentionPosts();
+    detectMentionComments();
+    detectMentionNotifications();
+  }
+
+  function detectMentionPosts() {
+    const posts = [...document.querySelectorAll('h2')]
+      .filter((heading) => getText(heading).includes("Feed post"))
+      .map(findFeedPostContainer)
+      .filter(Boolean);
+
+    [...new Set(posts)].forEach((post) => {
+      const match = findWatcherMatch(post);
+      if (!match) {
+        return;
+      }
+
+      const activityId = getPostActivityId(post);
+      const id = `post:${activityId}`;
+      const item = buildMentionItem({
+        id,
+        source: "post",
+        container: post,
+        match
+      });
+
+      saveMentionItem(item).then((savedItem) => injectMentionControls(post, savedItem));
+    });
+  }
+
+  function detectMentionComments() {
+    const comments = [...document.querySelectorAll('[componentkey^="replaceableComment_urn:li:comment:"]')]
+      .filter((comment) => comment.getAttribute("componentkey")?.startsWith("replaceableComment_urn:li:comment:"));
+
+    [...new Map(comments.map((comment) => [getCommentId(comment), comment])).values()].forEach((comment) => {
+      const match = findWatcherMatch(comment);
+      if (!match) {
+        return;
+      }
+
+      const commentId = getCommentId(comment);
+      const item = buildMentionItem({
+        id: `comment:${commentId}`,
+        source: "comment",
+        container: comment,
+        match
+      });
+
+      saveMentionItem(item).then((savedItem) => injectMentionControls(comment, savedItem));
+    });
+  }
+
+  function detectMentionNotifications() {
+    if (!window.location.pathname.startsWith("/notifications")) {
+      return;
+    }
+
+    const candidates = [...document.querySelectorAll('[role="listitem"], li, article')]
+      .filter((element) => !isInsideJliUi(element))
+      .filter(hasNonJliLinkedInLink)
+      .map(findNotificationContainer)
+      .filter((element) => element && !isInsideJliUi(element) && hasNonJliLinkedInLink(element) && !isReactionNotification(element));
+
+    [...new Set(candidates)].forEach((notification) => {
+      const match = findWatcherMatch(notification);
+      if (!match) {
+        return;
+      }
+
+      const url = getNotificationUrl(notification);
+      const id = getNotificationId(notification, url, match);
+      const item = buildMentionItem({
+        id,
+        source: "notification",
+        container: notification,
+        match
+      });
+      item.url = url;
+
+      saveMentionItem(item).then((savedItem) => injectMentionControls(notification, savedItem));
+    });
+  }
+
+  function findNotificationContainer(element) {
+    let node = element;
+    let candidate = element;
+
+    for (let depth = 0; node && depth < 8; depth += 1) {
+      if (isUnsafeContainer(node)) {
+        break;
+      }
+
+      if (node.matches?.('[role="listitem"], li, article')) {
+        candidate = node;
+      }
+
+      node = node.parentElement;
+    }
+
+    return candidate;
+  }
+
+  function hasNonJliLinkedInLink(element) {
+    return getNonJliLinks(element).some((link) => link.href.startsWith("https://www.linkedin.com/"));
+  }
+
+  function hideReactionNotifications() {
+    if (!window.location.pathname.startsWith("/notifications")) {
+      return;
+    }
+
+    [...document.querySelectorAll('[data-view-name="notification-card-container"], .nt-card, article')]
+      .filter(isReactionNotification)
+      .forEach((notification) => collapseElement(notification, "reaction-notification", getReactionNotificationSummary(notification)));
+  }
+
+  function collapseAnalyticsNotifications() {
+    if (!window.location.pathname.startsWith("/notifications")) {
+      return;
+    }
+
+    [...document.querySelectorAll('[data-view-name="notification-card-container"], .nt-card, article')]
+      .filter(isAnalyticsNotification)
+      .forEach((notification) => collapseElement(notification, "analytics-notification", getAnalyticsNotificationSummary(notification)));
+  }
+
+  function getReactionNotificationSummary(notification) {
+    const headline = getNotificationHeadlineText(notification);
+    const reactedMatch = headline.match(/^(.*?)\s+reacted to\s+(.+?)(?:\s+that mentioned you\.?|\.)?$/i);
+    const likedMatch = headline.match(/^(.*?)\s+liked\s+(.+?)(?:\s+that mentioned you\.?|\.)?$/i);
+    const match = reactedMatch || likedMatch;
+
+    if (!match) {
+      return headline ? `Reaction: ${headline}` : "Reaction notification";
+    }
+
+    const actorText = match[1].trim();
+    const targetText = match[2].trim();
+    const count = getReactionActorCount(actorText);
+
+    return `${count} ${count === 1 ? "person" : "people"} reacted to ${targetText}`;
+  }
+
+  function getReactionActorCount(actorText) {
+    const otherMatch = actorText.match(/\band\s+([\d,]+)\s+others?\b/i);
+    if (otherMatch) {
+      return Number(otherMatch[1].replace(/,/g, "")) + 1;
+    }
+
+    return 1;
+  }
+
+  function isReactionNotification(element) {
+    return isReactionText(getNotificationHeadlineText(element));
+  }
+
+  function isAnalyticsNotification(element) {
+    const text = getNotificationHeadlineText(element).toLowerCase();
+
+    return text.includes("your post got") && (text.includes("impressions") || text.includes("profile viewers"));
+  }
+
+  function getAnalyticsNotificationSummary(notification) {
+    const headline = getNotificationHeadlineText(notification);
+    return headline ? `Analytics: ${headline}` : "Post analytics notification";
+  }
+
+  function isReactionText(value) {
+    const text = String(value || "").toLowerCase();
+
+    return /\b(liked|likes|reacted)\b/.test(text) || /\b\d+\s+reactions?\b/.test(text);
+  }
+
+  function getNotificationId(notification, url, match) {
+    const activityId = url.match(/urn:li:activity:\d+/)?.[0];
+    const watcherLabel = match.watcher.label;
+    if (activityId) {
+      return `notification:${activityId}:${watcherLabel}:${match.matchedValue}`;
+    }
+
+    const componentKey = notification.getAttribute("componentkey") || notification.querySelector?.("[componentkey]")?.getAttribute("componentkey");
+    if (componentKey) {
+      return `notification:${componentKey}:${watcherLabel}:${match.matchedValue}`;
+    }
+
+    return `notification:${hashString(`${url}:${getStableNotificationText(notification)}:${watcherLabel}:${match.matchedValue}`)}`;
+  }
+
+  function getStableNotificationText(notification) {
+    return getCleanText(notification).slice(0, 220);
+  }
+
+  function buildMentionItem({ id, source, container, match }) {
+    return {
+      id,
+      source,
+      status: "new",
+      matchedWatcherLabel: match.watcher.label,
+      matchedKind: match.watcher.kind,
+      matchType: match.matchType,
+      matchedValue: match.matchedValue,
+      actorName: getActorName(container),
+      previewText: getPreviewText(container),
+      url: getMentionUrl(container),
+      pageUrl: window.location.href
+    };
+  }
+
+  function getMentionUrl(container) {
+    const postUrl = getNonJliLinks(container)
+      .filter((link) => link.href.includes("/feed/update/urn:li:activity:"))
+      .map((link) => link.href)
+      .find(Boolean);
+
+    return postUrl || window.location.href;
+  }
+
+  function getNotificationUrl(container) {
+    const links = getNonJliLinks(container);
+    const headlineUrl = container.querySelector?.(".nt-card__headline[href]")?.href;
+    const updateUrl = links
+      .filter((link) => link.href.includes("/feed/update/urn:li:activity:"))
+      .map((link) => link.href)
+      .find(Boolean);
+    const firstLinkedInUrl = links
+      .map((link) => link.href)
+      .find((href) => href.startsWith("https://www.linkedin.com/"));
+
+    return headlineUrl || updateUrl || firstLinkedInUrl || window.location.href;
+  }
+
+  function hashString(value) {
+    let hash = 0;
+    const text = String(value || "");
+
+    for (let index = 0; index < text.length; index += 1) {
+      hash = ((hash << 5) - hash) + text.charCodeAt(index);
+      hash |= 0;
+    }
+
+    return Math.abs(hash).toString(36);
+  }
+
+  function injectMentionControls(container, item) {
+    if (!container || container.querySelector?.(`[data-jli-mention-id="${CSS.escape(item.id)}"]`)) {
+      return;
+    }
+
+    container.classList.add("jli-mention-candidate");
+    container.setAttribute("data-jli-mention-source", item.source);
+
+    const controls = document.createElement("div");
+    controls.className = "jli-mention-controls";
+    controls.setAttribute("data-jli-mention-id", item.id);
+    controls.innerHTML = `
+      <span class="jli-mention-label"></span>
+      <button type="button" data-jli-status="need-reply">Need reply</button>
+      <button type="button" data-jli-status="done">Done</button>
+      <button type="button" data-jli-status="dismissed">Dismiss</button>
+    `;
+
+    controls.addEventListener("click", (event) => {
+      const button = event.target.closest?.("button[data-jli-status]");
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      setMentionStatus(item.id, button.dataset.jliStatus);
+    });
+
+    renderMentionStatus(controls, item);
+    container.insertBefore(controls, container.firstElementChild || null);
+  }
+
+  function renderMentionStatus(controls, item) {
+    if (!controls || !item) {
+      return;
+    }
+
+    controls.dataset.jliMentionStatus = item.status;
+    const label = controls.querySelector(".jli-mention-label");
+    if (label) {
+      label.textContent = `${item.statusLabel || statusLabel(item.status)}: ${item.matchedWatcherLabel} (${item.matchType})`;
+    }
+
+    controls.querySelectorAll("button[data-jli-status]").forEach((button) => {
+      button.toggleAttribute("aria-pressed", button.dataset.jliStatus === item.status);
+    });
+  }
+
+  function statusLabel(status) {
+    return {
+      new: "Mention",
+      "need-reply": "Need reply",
+      done: "Done",
+      dismissed: "Dismissed"
+    }[status] || "Mention";
+  }
+
+  function isFeedPage() {
+    return window.location.pathname === "/feed" || window.location.pathname === "/feed/";
+  }
+
+  function isNotificationsPage() {
+    return window.location.pathname.startsWith("/notifications");
+  }
+
+  function distanceFromPageBottom() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const pageHeight = Math.max(
+      document.body?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0
+    );
+
+    return pageHeight - (scrollTop + viewportHeight);
+  }
+
+  function findAutoLoadMoreButton() {
+    const labels = isNotificationsPage() ? ["Show more results"] : ["Load more"];
+
+    return [...document.querySelectorAll("button")]
+      .filter((button) => !isInsideJliUi(button) && !button.disabled && labels.includes(getCleanText(button)))
+      .find(isElementVisible) || null;
+  }
+
+  function maybeAutoLoadMore() {
+    if ((!isFeedPage() && !isNotificationsPage()) || distanceFromPageBottom() > AUTO_LOAD_MORE_BOTTOM_DISTANCE_PX) {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - lastAutoLoadMoreAt < AUTO_LOAD_MORE_THROTTLE_MS) {
+      return;
+    }
+
+    const button = findAutoLoadMoreButton();
+    if (!button) {
+      return;
+    }
+
+    lastAutoLoadMoreAt = now;
+    button.click();
+  }
+
+  function scheduleAutoLoadMore() {
+    window.clearTimeout(autoLoadMoreTimer);
+    autoLoadMoreTimer = window.setTimeout(maybeAutoLoadMore, AUTO_LOAD_MORE_DELAY_MS);
+  }
+
   function cleanup() {
+    removePageTodoUi();
     expandMainFeedLayout();
     hideRightRail();
     hideLinkedInNews();
@@ -468,6 +1134,14 @@
     hidePromotedPosts();
     hideSponsoredContent();
     hideJobRecommendations();
+    hideReactionNotifications();
+    collapseAnalyticsNotifications();
+    detectMentionCandidates();
+    scheduleAutoLoadMore();
+  }
+
+  function removePageTodoUi() {
+    document.querySelectorAll(".jli-todo-nav, .jli-todo-overlay, .jli-todo-left-rail, .jli-todo-floating").forEach((element) => element.remove());
   }
 
   function scheduleCleanup() {
@@ -484,8 +1158,26 @@
     }, 500);
   }
 
-  cleanup();
+  loadWatcherState().then(() => cleanup());
   watchUrlChanges();
+  window.addEventListener("scroll", scheduleAutoLoadMore, { passive: true });
+  window.addEventListener("resize", scheduleAutoLoadMore, { passive: true });
+
+  chrome?.storage?.onChanged?.addListener((changes, areaName) => {
+    if (areaName !== "local") {
+      return;
+    }
+
+    if (changes[CONFIG_KEY]) {
+      watcherConfig = normalizeConfig(changes[CONFIG_KEY].newValue || DEFAULT_CONFIG);
+      scheduleCleanup();
+    }
+
+    if (changes[MENTIONS_KEY]) {
+      mentionItems = changes[MENTIONS_KEY].newValue || {};
+      scheduleCleanup();
+    }
+  });
 
   new MutationObserver(scheduleCleanup).observe(document.documentElement, {
     childList: true,
