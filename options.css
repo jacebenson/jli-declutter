@@ -10,7 +10,7 @@ body {
 }
 
 main {
-  width: min(840px, calc(100vw - 32px));
+  width: min(680px, calc(100vw - 32px));
   margin: 32px auto;
 }
 
@@ -42,7 +42,6 @@ p {
   margin: 0;
 }
 
-.watcher-card,
 .settings-card {
   display: grid;
   gap: 14px;
@@ -51,12 +50,6 @@ p {
   border: 1px solid color-mix(in srgb, CanvasText 18%, Canvas 82%);
   border-radius: 12px;
   background: color-mix(in srgb, Canvas 94%, CanvasText 6%);
-}
-
-.watcher-heading {
-  display: grid;
-  grid-template-columns: 1fr 180px;
-  gap: 12px;
 }
 
 fieldset {
@@ -122,13 +115,6 @@ button {
   font: 650 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.remove-watcher,
-.remove-message-template {
-  justify-self: start;
-  background: color-mix(in srgb, CanvasText 12%, Canvas 88%);
-  color: CanvasText;
-}
-
 .actions {
   display: flex;
   gap: 12px;
@@ -141,7 +127,6 @@ button {
 }
 
 @media (max-width: 640px) {
-  .watcher-heading,
   .feature-toggles {
     grid-template-columns: 1fr;
   }

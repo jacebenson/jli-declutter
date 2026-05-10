@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "JLI LinkedIn Cleaner",
-  "description": "Locally hides LinkedIn feed clutter like the right rail, ads, and promoted posts.",
-  "version": "0.1.0",
+  "name": "JLI LinkedIn Declutter",
+  "description": "Locally hides and collapses LinkedIn feed and notification clutter.",
+  "version": "1.0.0",
   "permissions": ["storage"],
-  "action": {
-    "default_title": "JLI TODOs",
-    "default_popup": "popup.html"
+  "icons": {
+    "128": "assets/icon-128.png"
   },
-  "background": {
-    "service_worker": "background.js"
+  "action": {
+    "default_title": "JLI Declutter",
+    "default_icon": "assets/icon-128.png"
   },
   "options_page": "options.html",
   "content_scripts": [
@@ -20,9 +20,6 @@
         "content/core.js",
         "content/features/clean-feed.js",
         "content/features/notifications.js",
-        "content/features/mentions.js",
-        "content/features/outreach.js",
-        "content/features/shortcuts.js",
         "content/main.js"
       ],
       "run_at": "document_idle"

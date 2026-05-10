@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">JLI LinkedIn Declutter</title>
+  <desc id="desc">Blue square extension icon with JLI letters and a small check mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="18" y1="12" x2="112" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a66c2"/>
+      <stop offset="1" stop-color="#063b78"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#001a33" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <path d="M24 32h80" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.22"/>
+  <path d="M24 96h80" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.16"/>
+  <g filter="url(#shadow)">
+    <rect x="25" y="28" width="78" height="72" rx="18" fill="#ffffff" opacity="0.96"/>
+    <path d="M43 46h11v31c0 11-7 18-18 18-3 0-6-.4-9-1.4l1.8-9.5c2 .7 4.1 1 6.4 1 5.2 0 7.8-2.8 7.8-8.2V46Z" fill="#0a66c2"/>
+    <path d="M61 46h11v39h19v10H61V46Z" fill="#0a66c2"/>
+    <path d="M93 46h11v49H93V46Z" fill="#0a66c2"/>
+  </g>
+  <circle cx="96" cy="96" r="22" fill="#18a058"/>
+  <path d="m85 96 7 7 16-18" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
