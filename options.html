@@ -3,20 +3,50 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JLI Watchers</title>
+    <title>JLI Settings</title>
     <link rel="stylesheet" href="options.css">
   </head>
   <body>
     <main>
       <header>
-        <h1>JLI Watchers</h1>
-        <p>Configure profile URLs and terms to flag LinkedIn posts or comments that may need a reply.</p>
+        <h1>JLI Settings</h1>
+        <p>Configure watched LinkedIn mentions and local outreach message templates.</p>
       </header>
 
-      <section id="watchers" aria-live="polite"></section>
+      <section class="settings-section">
+        <div class="section-heading">
+          <h2>Features</h2>
+          <p>Enable only the LinkedIn page changes and local TODO helpers you want.</p>
+        </div>
+        <fieldset class="feature-toggles">
+          <legend>Enabled features</legend>
+          <label><input id="feature-clean-feed" type="checkbox"> Clean feed clutter</label>
+          <label><input id="feature-collapse-notifications" type="checkbox"> Collapse notification clutter</label>
+          <label><input id="feature-track-mentions" type="checkbox"> Track mention TODOs</label>
+          <label><input id="feature-track-outreach" type="checkbox"> Track outreach TODOs</label>
+          <label><input id="feature-message-shortcuts" type="checkbox"> Add feed message shortcuts</label>
+        </fieldset>
+      </section>
+
+      <section class="settings-section">
+        <div class="section-heading">
+          <h2>Watchers</h2>
+          <p>Profile URLs and terms to flag LinkedIn posts or comments that may need a reply.</p>
+        </div>
+        <section id="watchers" aria-live="polite"></section>
+        <button id="add-watcher" type="button">Add watcher</button>
+      </section>
+
+      <section class="settings-section">
+        <div class="section-heading">
+          <h2>Message Templates</h2>
+          <p>Templates for outreach TODOs from My Network pages. Supported variables: {{name}}, {{firstName}}, {{profileUrl}}, {{source}}.</p>
+        </div>
+        <section id="message-templates" aria-live="polite"></section>
+        <button id="add-message-template" type="button">Add template</button>
+      </section>
 
       <div class="actions">
-        <button id="add-watcher" type="button">Add watcher</button>
         <button id="save" type="button">Save</button>
       </div>
 
@@ -24,7 +54,7 @@
     </main>
 
     <template id="watcher-template">
-      <article class="watcher-card">
+      <article class="watcher-card watcher-config-card">
         <div class="watcher-heading">
           <label>
             Label
@@ -49,6 +79,28 @@
           <textarea class="watcher-terms" rows="4" placeholder="Jace Benson&#10;Product Name"></textarea>
         </label>
         <button class="remove-watcher" type="button">Remove</button>
+      </article>
+    </template>
+
+    <template id="message-template-template">
+      <article class="settings-card message-template-card">
+        <div class="watcher-heading">
+          <label>
+            Label
+            <input class="message-template-label" type="text" placeholder="New connection">
+          </label>
+          <fieldset>
+            <legend>Applies to</legend>
+            <label><input type="checkbox" value="new-connection"> New connection</label>
+            <label><input type="checkbox" value="new-follower"> New follower</label>
+            <label><input type="checkbox" value="catch-up"> Catch-up</label>
+          </fieldset>
+        </div>
+        <label>
+          Message body
+          <textarea class="message-template-body" rows="5" placeholder="Hey {{firstName}}, thanks for connecting. Great to have you in my network."></textarea>
+        </label>
+        <button class="remove-message-template" type="button">Remove</button>
       </article>
     </template>
 

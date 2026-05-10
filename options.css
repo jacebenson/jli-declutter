@@ -23,24 +23,65 @@ h1 {
   font-size: 28px;
 }
 
+h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
 p {
   color: color-mix(in srgb, CanvasText 70%, Canvas 30%);
 }
 
-.watcher-card {
+.settings-section {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.section-heading p {
+  margin: 0;
+}
+
+.watcher-card,
+.settings-card {
   display: grid;
   gap: 14px;
   padding: 18px;
   margin-bottom: 16px;
   border: 1px solid color-mix(in srgb, CanvasText 18%, Canvas 82%);
   border-radius: 12px;
-  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
+  background: color-mix(in srgb, Canvas 94%, CanvasText 6%);
 }
 
 .watcher-heading {
   display: grid;
   grid-template-columns: 1fr 180px;
   gap: 12px;
+}
+
+fieldset {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, CanvasText 24%, Canvas 76%);
+  border-radius: 10px;
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.feature-toggles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+legend {
+  padding: 0 4px;
+  font-weight: 650;
 }
 
 label {
@@ -56,10 +97,15 @@ textarea {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid color-mix(in srgb, CanvasText 24%, Canvas 76%);
-  border-radius: 8px;
+  border-radius: 10px;
   background: Canvas;
   color: CanvasText;
   font: inherit;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  padding: 0;
 }
 
 textarea {
@@ -76,7 +122,8 @@ button {
   font: 650 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.remove-watcher {
+.remove-watcher,
+.remove-message-template {
   justify-self: start;
   background: color-mix(in srgb, CanvasText 12%, Canvas 88%);
   color: CanvasText;
@@ -94,7 +141,8 @@ button {
 }
 
 @media (max-width: 640px) {
-  .watcher-heading {
+  .watcher-heading,
+  .feature-toggles {
     grid-template-columns: 1fr;
   }
 }

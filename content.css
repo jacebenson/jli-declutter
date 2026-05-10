@@ -3,92 +3,11 @@
   display: none !important;
 }
 
-html.jli-expanded-layout {
-  --jli-feed-card-width: min(calc(100vw - 96px), 740px);
-}
-
-html.jli-expanded-layout main,
-html.jli-expanded-layout [role="main"] {
-  max-width: min(calc(100vw - 32px), 1280px) !important;
-  width: min(calc(100vw - 32px), 1280px) !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-shell="true"] {
-  max-width: min(calc(100vw - 32px), 1280px) !important;
-  width: min(calc(100vw - 32px), 1280px) !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-root="true"] {
-  box-sizing: border-box !important;
-  display: flex !important;
-  justify-content: center !important;
-  margin-left: calc(50% - 50vw) !important;
-  margin-right: calc(50% - 50vw) !important;
-  max-width: 100vw !important;
-  padding-inline: 16px !important;
-  width: 100vw !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-main="true"] {
-  flex: 0 0 var(--jli-feed-card-width) !important;
-  margin-inline: auto !important;
-  max-width: var(--jli-feed-card-width) !important;
-  min-width: 0 !important;
-  width: var(--jli-feed-card-width) !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-ancestor="true"] {
-  flex: 1 1 auto !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  width: 100% !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-card="true"] {
-  margin-inline: auto !important;
-  max-width: var(--jli-feed-card-width) !important;
-  width: var(--jli-feed-card-width) !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-card="true"] img,
-html.jli-expanded-layout [data-jli-feed-card="true"] video,
-html.jli-expanded-layout [data-jli-feed-card="true"] figure,
-html.jli-expanded-layout [data-jli-feed-card="true"] [style*="aspect-ratio"] {
-  max-width: 100% !important;
-  width: 100% !important;
-}
-
-html.jli-expanded-layout [data-jli-feed-card="true"] a,
-html.jli-expanded-layout [data-jli-feed-card="true"] div,
-html.jli-expanded-layout [data-jli-feed-card="true"] section,
-html.jli-expanded-layout [data-jli-feed-card="true"] article {
-  max-width: 100% !important;
-}
-
-html.jli-expanded-layout [role="main"] > *,
-html.jli-expanded-layout [role="main"] [role="list"],
-html.jli-expanded-layout [role="main"] [role="listitem"],
-html.jli-expanded-layout main > *,
-html.jli-expanded-layout main [role="list"],
-html.jli-expanded-layout main [role="listitem"],
-html.jli-expanded-layout [data-jli-feed-main="true"] > *,
-html.jli-expanded-layout [data-jli-feed-main="true"] [role="list"],
-html.jli-expanded-layout [data-jli-feed-main="true"] [role="listitem"],
-html.jli-expanded-layout [data-jli-feed-ancestor="true"] > *,
-html.jli-expanded-layout [data-jli-feed-ancestor="true"] [role="list"],
-html.jli-expanded-layout [data-jli-feed-ancestor="true"] [role="listitem"] {
-  max-width: 100% !important;
-}
-
-html.jli-expanded-layout [role="main"] {
-  flex: 1 1 auto !important;
-}
-
 .jli-collapsed-card {
   box-sizing: border-box;
   margin: 8px 0;
   border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: 8px;
+  border-radius: 12px;
   background: Canvas;
   color: CanvasText;
 }
@@ -113,37 +32,73 @@ html.jli-expanded-layout [role="main"] {
 }
 
 .jli-mention-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  box-sizing: border-box;
-  margin: 8px;
-  padding: 8px;
-  border: 1px solid rgba(10, 102, 194, 0.28);
-  border-radius: 10px;
-  background: color-mix(in srgb, #0a66c2 9%, Canvas 91%);
-  color: CanvasText;
-  font: 650 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  clear: both !important;
+  display: block !important;
+  flex: none !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 8px !important;
+  padding: 8px !important;
+  border: 1px solid rgba(10, 102, 194, 0.28) !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, #0a66c2 9%, Canvas 91%) !important;
+  color: CanvasText !important;
+  font: 650 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 .jli-mention-label {
-  margin-right: auto;
+  display: block !important;
+  margin: 0 0 6px !important;
+}
+
+.jli-mention-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  align-items: center !important;
 }
 
 .jli-mention-controls button {
-  border: 1px solid rgba(10, 102, 194, 0.32);
-  border-radius: 999px;
-  padding: 5px 8px;
-  background: Canvas;
-  color: CanvasText;
-  cursor: pointer;
-  font: inherit;
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  border: 1px solid rgba(10, 102, 194, 0.32) !important;
+  border-radius: 999px !important;
+  padding: 5px 8px !important;
+  background: Canvas !important;
+  color: CanvasText !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  line-height: 1.2 !important;
 }
 
 .jli-mention-controls button[aria-pressed="true"] {
   background: #0a66c2;
   color: #fff;
+}
+
+.jli-mention-controls-inline {
+  clear: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  width: auto !important;
+  margin: 0 0 0 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.jli-mention-controls-inline button {
+  padding: 3px 7px !important;
+  font-size: 11px !important;
 }
 
 .jli-mention-controls[data-jli-mention-status="done"],
@@ -154,6 +109,28 @@ html.jli-expanded-layout [role="main"] {
 .jli-mention-candidate:has(.jli-mention-controls[data-jli-mention-status="done"]),
 .jli-mention-candidate:has(.jli-mention-controls[data-jli-mention-status="dismissed"]) {
   outline-color: color-mix(in srgb, CanvasText 18%, transparent) !important;
+}
+
+.jli-message-shortcut {
+  display: inline-grid !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 32px !important;
+  height: 32px !important;
+  margin-inline-end: 4px !important;
+  border: 1px solid rgba(10, 102, 194, 0.28) !important;
+  border-radius: 999px !important;
+  background: Canvas !important;
+  color: #0a66c2 !important;
+  font: 650 16px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  text-decoration: none !important;
+}
+
+.jli-message-shortcut:hover,
+.jli-message-shortcut:focus-visible {
+  background: color-mix(in srgb, #0a66c2 10%, Canvas 90%) !important;
+  outline: 2px solid color-mix(in srgb, #0a66c2 42%, transparent) !important;
+  outline-offset: 2px !important;
 }
 
 iframe[title="advertisement"],

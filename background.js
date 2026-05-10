@@ -14,7 +14,7 @@ updateBadge();
 async function updateBadge() {
   const stored = await chrome.storage.local.get(MENTIONS_KEY);
   const items = Object.values(stored[MENTIONS_KEY] || {});
-  const openCount = items.filter((item) => !["done", "dismissed"].includes(item.status)).length;
+  const openCount = items.filter((item) => !["done", "dismissed", "messaged"].includes(item.status)).length;
 
   await chrome.action.setBadgeBackgroundColor({ color: "#0a66c2" });
   await chrome.action.setBadgeText({ text: openCount ? String(openCount) : "" });

@@ -16,7 +16,15 @@
     {
       "matches": ["https://www.linkedin.com/*"],
       "css": ["content.css"],
-      "js": ["content.js"],
+      "js": [
+        "content/core.js",
+        "content/features/clean-feed.js",
+        "content/features/notifications.js",
+        "content/features/mentions.js",
+        "content/features/outreach.js",
+        "content/features/shortcuts.js",
+        "content/main.js"
+      ],
       "run_at": "document_idle"
     }
   ]

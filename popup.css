@@ -45,6 +45,58 @@ h1 {
   font-size: 12px;
 }
 
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.tabs,
+.filters label:first-child {
+  grid-column: 1 / -1;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid rgba(10, 102, 194, 0.2);
+  border-radius: 999px;
+  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
+}
+
+.tabs button {
+  border-color: transparent;
+  background: transparent;
+}
+
+.tabs button[aria-selected="true"] {
+  background: #0a66c2;
+  color: #fff;
+}
+
+.filters label {
+  display: grid;
+  gap: 4px;
+  color: color-mix(in srgb, CanvasText 70%, Canvas 30%);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.filters input,
+.filters select {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid rgba(10, 102, 194, 0.24);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: Canvas;
+  color: CanvasText;
+  font: 500 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 #todos {
   display: grid;
   gap: 10px;
@@ -61,7 +113,8 @@ h1 {
 }
 
 .todo-card[data-status="done"],
-.todo-card[data-status="dismissed"] {
+.todo-card[data-status="dismissed"],
+.todo-card[data-status="messaged"] {
   opacity: 0.66;
 }
 
