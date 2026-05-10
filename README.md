@@ -28,7 +28,7 @@ Settings are stored locally with `chrome.storage.local` under `jliDeclutterConfi
 
 ## Privacy 
 
-See `index.html` for the homepage and privacy policy. `privacy.html` redirects to the privacy section on that same page. In short: LinkedIn page content is processed locally only to hide or collapse matching clutter. Settings are stored locally and no data is transmitted to the developer or any external server.
+See `docs/index.html` for the homepage and privacy policy. `docs/privacy.html` redirects to the privacy section on that same page. In short: LinkedIn page content is processed locally only to hide or collapse matching clutter. Settings are stored locally and no data is transmitted to the developer or any external server.
 
 ## Chrome Web Store Disclosures
 
@@ -69,10 +69,9 @@ The output is written to `dist/jli-declutter-v<package.version>.zip`, for exampl
 ## Project Layout
 
 - `manifest.json`: Manifest V3 config.
-- `index.html`: Homepage and privacy policy page for publishing.
 - `assets/`: Extension icon source and PNG assets.
+- `docs/`: Homepage and privacy policy page for publishing.
 - `options.html`, `options.css`, `options.js`: Settings UI.
-- `privacy.html`: Redirect to the privacy section of `index.html`.
 - `content.css`: LinkedIn page styles for hidden and collapsed clutter.
 - `content/core.js`: Shared helpers and local config loading.
 - `content/main.js`: Content-script coordinator.

@@ -10,14 +10,12 @@ const zipPath = join(distDir, zipName);
 
 const files = [
   "manifest.json",
-  "index.html",
   "assets",
   "content.css",
   "content",
   "options.html",
   "options.css",
   "options.js",
-  "privacy.html",
   "README.md"
 ];
 
