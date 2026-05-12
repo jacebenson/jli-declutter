@@ -307,7 +307,10 @@
 
   function getBlockedEntities() {
     // Get list of people/brands user wants to block
-    return JLI.state?.config?.blockedEntities || [];
+    console.log('[JLI] Getting blocked entities. JLI.state:', JLI.state);
+    const entities = JLI.state?.config?.blockedEntities || [];
+    console.log('[JLI] Blocked entities from config:', entities);
+    return entities;
   }
 
   function detectReactionType(text) {
@@ -392,94 +395,166 @@
   function getPostAuthor(post) {
     // Try to find the author name from the post
     // LinkedIn puts the author name in various places
-    
-    // Method 1: Look for aria-label on the post container
-    const ariaLabel = post?.getAttribute?.('aria-label') || '';
-    if (ariaLabel && !ariaLabel.includes('Feed post')) {
-      // aria-label often contains "Post by [Author Name]"
-      const match = ariaLabel.match(/post by\s+(.+?)(?:\s+\d|$)/i);
-      if (match) return match[1].trim();
+
+    // Method 1: Look for aria-label on elements within the post (not just the post itself)
+    // The aria-label often contains "Jean Seely, PMP... 1st"
+    const labeledElements = post?.querySelectorAll?.('[aria-label]');
+    if (labeledElements) {
+      for (const el of labeledElements) {
+        const ariaLabel = el.getAttribute('aria-label') || '';
+        // Match patterns like "Jean Seely, PMP... 1st" or "Jean Seely's post"
+        const match = ariaLabel.match(/^(.+?)(?:\s+\d+(?:st|nd|rd|th)|\s+['\u2019]s\s+post|$)/i);
+        if (match && match[1].length > 2 && !ariaLabel.includes('Feed post')) {
+          const name = match[1].trim();
+          // Make sure it's not just a connection degree
+          if (!name.match(/^(1st|2nd|3rd|\+)$/)) {
+            return name;
+          }
+        }
+      }
     }
 
-    // Method 2: Look for the main author link/heading
-    const authorSelectors = [
-      'a[href*="/in/"] span[class*="_0a297d86"]',  // Name in profile link
-      'a[href*="/in/"] .update-components-actor__name', // Alternative class
-      '[class*="actor__name"]',
-      'h2 span[class*="_0a297d86"]',
-      '.feed-shared-actor__name'
-    ];
-
-    for (const selector of authorSelectors) {
-      const el = post?.querySelector?.(selector);
-      if (el) {
+    // Method 2: Look for the main author name in the post header
+    // Based on the HTML, author name is in a <p> with specific class pattern, inside an <a> to /in/
+    const authorLink = post?.querySelector?.('a[href*="/in/"]');
+    if (authorLink) {
+      // Find all text elements inside the author link
+      const textElements = authorLink.querySelectorAll('p, span, div');
+      for (const el of textElements) {
         const text = JLI.getText(el);
-        if (text && text.length > 0 && text.length < 100) {
+        // Look for text that looks like a name (contains letters, might have commas for credentials)
+        // Filter out short text, connection degrees, and subtitles
+        if (text &&
+            text.length > 2 &&
+            text.length < 150 &&
+            !text.match(/^[•\s]*(1st|2nd|3rd|\+)$/) &&
+            !text.match(/^( Strategic | Championing | Enthusiast |Former |CEO |Founder)/i) &&
+            text.match(/[a-zA-Z]{2,}/)) {
           return text.trim();
         }
       }
     }
 
-    // Method 3: Look at the first link to a profile
-    const profileLink = post?.querySelector?.('a[href*="/in/"]');
-    if (profileLink) {
-      // Check for aria-label on the link
-      const linkLabel = profileLink.getAttribute('aria-label');
-      if (linkLabel) {
-        // Often "View [Name]'s profile"
-        const match = linkLabel.match(/view\s+(.+?)['\u2019]s?\s+profile/i);
-        if (match) return match[1].trim();
+    // Method 3: Look at profile images with alt text
+    const profileImages = post?.querySelectorAll?.('img[alt*="profile"]');
+    if (profileImages) {
+      for (const img of profileImages) {
+        const alt = img.alt || '';
+        const match = alt.match(/view\s+(.+?)['\u2019]s?\s+profile/i);
+        if (match) {
+          return match[1].trim();
+        }
       }
+    }
 
-      // Check for img alt text
-      const img = profileLink.querySelector('img');
-      if (img?.alt) {
-        const match = img.alt.match(/view\s+(.+?)['\u2019]s?\s+profile/i);
-        if (match) return match[1].trim();
+    // Method 4: Broad search - look for text that matches "Name, Credential" pattern
+    // This catches "Jean Seely, PMP, MSPM..."
+    const allText = post?.textContent || '';
+    const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    for (const line of lines.slice(0, 10)) { // Check first 10 lines
+      // Pattern: Name followed by credentials (comma-separated)
+      // Examples: "Jean Seely, PMP, MSPM..." or "John Smith, MBA"
+      const credentialMatch = line.match(/^([A-Z][a-zA-Z\s]+(?:,\s*[A-Z]+)+)/);
+      if (credentialMatch && credentialMatch[1].length > 3) {
+        return credentialMatch[1].trim();
+      }
+      // Simple name pattern (first and last name)
+      const nameMatch = line.match(/^([A-Z][a-z]+\s+[A-Z][a-zA-Z\s-]+)$/);
+      if (nameMatch && nameMatch[1].length > 3 && nameMatch[1].length < 100) {
+        return nameMatch[1].trim();
       }
     }
 
     return null;
   }
 
+  function normalizeName(name) {
+    // Remove credentials, degrees, and extra whitespace
+    // "Jean Seely, PMP, MSPM, A-CSM..." -> "jeanseely"
+    return name
+      .toLowerCase()
+      .replace(/[,\s]+/g, '')  // Remove all commas and spaces
+      .replace(/(pmp|mspm|a-csm|ssm|dasm|cipm|mba|phd|md|jd|cpa|cfp|cissp|csm|psm|spc|lpc|ccc|dac|safe|agile|scrum|master|product|owner|coach|trainer|facilitator|practitioner|professional|certified|associate|expert|fellow|senior|lead|principal|engineer|developer|manager|director|vp|ceo|cto|cfo|coo|cmo|chief|president|founder|co-founder|owner|partner|analyst|consultant|specialist|strategist|architect|designer|writer|author|speaker|influencer|entrepreneur|innovator|champion|advocate|mentor|advisor|board|member)/gi, '')  // Remove common credentials
+      .replace(/[^a-z]/g, '');  // Keep only letters
+  }
+
   function isBlockedAuthor(authorName) {
     if (!authorName) return false;
-    
+
     const blockedEntities = getBlockedEntities();
     if (blockedEntities.length === 0) return false;
 
-    const authorLower = authorName.toLowerCase();
-    
+    const normalizedAuthor = normalizeName(authorName);
+
     return blockedEntities.some((blocked) => {
+      if (!blocked || blocked.trim().length === 0) return false;
+
+      const normalizedBlocked = normalizeName(blocked);
+
+      // Check if blocked name is contained in author name (normalized)
+      if (normalizedAuthor.includes(normalizedBlocked)) return true;
+
+      // Also check original case-insensitive contains
+      const authorLower = authorName.toLowerCase();
       const blockedLower = blocked.toLowerCase().trim();
-      // Check if blocked name is contained in author name OR author name contains blocked
-      return authorLower.includes(blockedLower) || blockedLower.includes(authorLower);
+      if (authorLower.includes(blockedLower)) return true;
+
+      return false;
     });
   }
 
   function collapsePostsByBlockedAuthors() {
-    if (!window.location.pathname.startsWith("/feed")) return;
+    console.log('[JLI] collapsePostsByBlockedAuthors() called');
+    console.log('[JLI] Current path:', window.location.pathname);
+
+    if (!window.location.pathname.startsWith("/feed")) {
+      console.log('[JLI] Not on feed, skipping');
+      return;
+    }
 
     const blockedEntities = getBlockedEntities();
-    if (blockedEntities.length === 0) return;
+    console.log('[JLI] Blocked entities:', blockedEntities);
 
-    // Find all feed post containers
-    const feedPosts = document.querySelectorAll('[role="listitem"]');
-    
-    feedPosts.forEach((post) => {
-      if (!isInsideFeed(post)) return;
-      if (!isValidPostContainer(post)) return;
-      if (post.hasAttribute('data-jli-author-checked')) return; // Already processed
+    if (blockedEntities.length === 0) {
+      console.log('[JLI] No blocked entities, skipping');
+      return;
+    }
 
-      post.setAttribute('data-jli-author-checked', 'true');
+    // Find all feed post containers that haven't been collapsed yet
+    const feedPosts = document.querySelectorAll('[role="listitem"]:not([data-jli-collapsed]):not([data-jli-hidden])');
+    console.log('[JLI] Found', feedPosts.length, 'feed posts to check');
+
+    let checkedCount = 0;
+    let matchedCount = 0;
+
+    feedPosts.forEach((post, index) => {
+      if (!isInsideFeed(post)) {
+        if (index < 2) console.log('[JLI] Post', index, 'not inside feed');
+        return;
+      }
+      if (!isValidPostContainer(post)) {
+        if (index < 2) console.log('[JLI] Post', index, 'not valid container');
+        return;
+      }
 
       const author = getPostAuthor(post);
+      checkedCount++;
+
+      // Debug: log first few authors found
+      if (checkedCount <= 5 && author) {
+        console.log('[JLI] Post', index, 'author:', author, '- Blocked?', isBlockedAuthor(author));
+      }
+
       if (!author) return;
 
       if (isBlockedAuthor(author)) {
+        matchedCount++;
+        console.log('[JLI] Collapsing post by blocked author:', author);
         JLI.collapseElement(post, 'blocked-author', `Post by ${author.slice(0, 50)}`);
       }
     });
+
+    console.log(`[JLI] Checked ${checkedCount} posts, collapsed ${matchedCount}`);
   }
 
   // ============================================================================
@@ -487,6 +562,8 @@
   // ============================================================================
   
   JLI.features.cleanFeed = function cleanFeed() {
+    console.log('[JLI] cleanFeed() called');
+
     // Remove expanded layout class
     document.documentElement.classList.remove("jli-expanded-layout");
 
@@ -498,6 +575,9 @@
     hideJobRecommendations();
     collapseRecommendedFollows();
     collapseReactionPosts(); // Filter reaction posts
+
+    console.log('[JLI] About to call collapsePostsByBlockedAuthors()');
     collapsePostsByBlockedAuthors(); // NEW: Block posts by author
+    console.log('[JLI] cleanFeed() complete');
   };
 })();

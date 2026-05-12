@@ -84,8 +84,13 @@ function readConfigFromDom() {
 }
 
 function normalizeConfig(config) {
+  // Merge features
   const features = { ...DEFAULT_CONFIG.features, ...(config?.features || {}) };
+
+  // Merge reaction filters
   const reactionFilters = { ...DEFAULT_CONFIG.reactionFilters, ...(config?.reactionFilters || {}) };
+
+  // Get blocked entities (use stored or default)
   const blockedEntities = config?.blockedEntities || DEFAULT_CONFIG.blockedEntities;
 
   return {

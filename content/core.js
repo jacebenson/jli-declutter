@@ -109,9 +109,19 @@
   };
 
   JLI.normalizeConfig = function normalizeConfig(config) {
+    // Merge features
     const features = { ...JLI.DEFAULT_CONFIG.features, ...(config?.features || {}) };
+    
+    // Merge reaction filters
+    const reactionFilters = { ...JLI.DEFAULT_CONFIG.reactionFilters, ...(config?.reactionFilters || {}) };
+    
+    // Get blocked entities (use stored or default)
+    const blockedEntities = config?.blockedEntities || JLI.DEFAULT_CONFIG.blockedEntities;
+    
     return {
-      features: Object.fromEntries(Object.keys(JLI.DEFAULT_CONFIG.features).map((key) => [key, features[key] !== false]))
+      features: Object.fromEntries(Object.keys(JLI.DEFAULT_CONFIG.features).map((key) => [key, features[key] !== false])),
+      reactionFilters: Object.fromEntries(Object.keys(JLI.DEFAULT_CONFIG.reactionFilters).map((key) => [key, reactionFilters[key] !== false])),
+      blockedEntities
     };
   };
 
