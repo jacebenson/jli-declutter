@@ -12,7 +12,19 @@
     features: {
       cleanFeed: true,
       collapseNotifications: true
-    }
+    },
+    reactionFilters: {
+      // Default: collapse reactions, keep comments and reposts visible
+      like: true,
+      love: true,
+      celebrate: true,
+      support: true,
+      insightful: true,
+      funny: true,
+      comment: false,
+      repost: false
+    },
+    blockedEntities: [] // Array of names to always collapse
   };
 
   JLI.state = {

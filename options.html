@@ -25,6 +25,37 @@
         </fieldset>
       </section>
 
+      <section class="settings-section">
+        <div class="section-heading">
+          <h2>Reaction Filters</h2>
+          <p>When someone you know reacts to a post, it shows up in your feed. Choose which reactions to collapse.</p>
+        </div>
+        <fieldset class="reaction-filters">
+          <legend>Collapse these reactions</legend>
+          <div class="reaction-grid">
+            <label><input id="reaction-like" type="checkbox"> Likes</label>
+            <label><input id="reaction-love" type="checkbox"> Loves</label>
+            <label><input id="reaction-celebrate" type="checkbox"> Celebrates</label>
+            <label><input id="reaction-support" type="checkbox"> Supports</label>
+            <label><input id="reaction-insightful" type="checkbox"> Insightful</label>
+            <label><input id="reaction-funny" type="checkbox"> Funny</label>
+            <label><input id="reaction-comment" type="checkbox"> Comments</label>
+            <label><input id="reaction-repost" type="checkbox"> Reposts</label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="settings-section">
+        <div class="section-heading">
+          <h2>Blocked People & Brands</h2>
+          <p>Always collapse posts from these people or brands (one per line). This blocks:<br>• Their original posts • Posts they react to (if reaction filters enabled) • Posts they comment on</p>
+        </div>
+        <fieldset>
+          <label for="blocked-entities">Blocked names:</label>
+          <textarea id="blocked-entities" rows="5" placeholder="e.g.\nJean Seely\nMark Cuban\nLinkedIn News\nSalesforce"></textarea>
+        </fieldset>
+      </section>
+
       <div class="actions">
         <button id="save" type="button">Save</button>
       </div>
