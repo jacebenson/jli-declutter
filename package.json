@@ -1,6 +1,6 @@
 {
   "name": "jli-declutter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Local-only Chrome extension for hiding and collapsing LinkedIn clutter.",
   "license": "ISC",
   "author": "",
