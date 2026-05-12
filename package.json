@@ -1,12 +1,12 @@
 {
   "name": "jli-declutter",
-  "version": "1.0.1",
-  "description": "Local-only Chrome extension for hiding and collapsing LinkedIn clutter.",
+  "version": "1.3.0",
+  "description": "CSS-only Chrome extension for hiding and collapsing LinkedIn clutter.",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
   "scripts": {
-    "check": "node --check content/core.js && node --check content/features/clean-feed.js && node --check content/features/notifications.js && node --check content/main.js && node --check options.js && node --check scripts/build-zip.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))\"",
+    "check": "node --check scripts/build-zip.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))\"",
     "zip": "node scripts/build-zip.js",
     "build": "npm run check && npm run zip"
   }

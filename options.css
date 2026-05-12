@@ -128,6 +128,25 @@ button {
   font: 650 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.button {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #0a66c2;
+  color: #fff;
+  text-decoration: none;
+  font: 650 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.highlight {
+  border-color: #0a66c2;
+}
+
+ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 .actions {
   display: flex;
   gap: 12px;

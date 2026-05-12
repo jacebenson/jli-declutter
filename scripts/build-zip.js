@@ -12,10 +12,9 @@ const files = [
   "manifest.json",
   "assets",
   "content.css",
-  "content",
+  "docs/css-generator.html",
   "options.html",
   "options.css",
-  "options.js",
   "README.md"
 ];
 

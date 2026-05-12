@@ -3,66 +3,53 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JLI Declutter Settings</title>
+    <title>JLI Declutter</title>
     <link rel="stylesheet" href="options.css">
   </head>
   <body>
     <main>
       <header>
-        <h1>JLI Declutter Settings</h1>
-        <p>Choose which LinkedIn clutter cleanup rules run locally in your browser.</p>
+        <h1>JLI Declutter</h1>
+        <p>CSS-only LinkedIn decluttering. No JavaScript runs on LinkedIn pages.</p>
       </header>
 
-      <section class="settings-section">
+      <section class="settings-section settings-card">
         <div class="section-heading">
-          <h2>Features</h2>
-          <p>JLI Declutter only changes your local LinkedIn page view. It does not use LinkedIn APIs or send data anywhere.</p>
+          <h2>What this extension does</h2>
+          <p>The packaged extension injects one static stylesheet on LinkedIn. It does not read page text, add nodes, move nodes, set attributes, observe DOM changes, click buttons, call APIs, or send data anywhere.</p>
         </div>
-        <fieldset class="feature-toggles">
-          <legend>Enabled features</legend>
-          <label><input id="feature-clean-feed" type="checkbox"> Clean feed clutter</label>
-          <label><input id="feature-collapse-notifications" type="checkbox"> Collapse notification clutter</label>
-        </fieldset>
       </section>
 
-      <section class="settings-section">
+      <section class="settings-section settings-card">
         <div class="section-heading">
-          <h2>Reaction Filters</h2>
-          <p>When someone you know reacts to a post, it shows up in your feed. Choose which reactions to collapse.</p>
+          <h2>Included rules</h2>
+          <ul>
+            <li>Collapse promoted/sponsored-looking feed cards.</li>
+            <li>Collapse social/reaction feed cards.</li>
+            <li>Hide job recommendation carousels.</li>
+            <li>Hide right-rail ad iframes and broad right-rail clutter.</li>
+            <li>Collapse reaction and analytics notifications.</li>
+          </ul>
+          <p>Collapsed cards expand on hover.</p>
         </div>
-        <fieldset class="reaction-filters">
-          <legend>Collapse these reactions</legend>
-          <div class="reaction-grid">
-            <label><input id="reaction-like" type="checkbox"> Likes</label>
-            <label><input id="reaction-love" type="checkbox"> Loves</label>
-            <label><input id="reaction-celebrate" type="checkbox"> Celebrates</label>
-            <label><input id="reaction-support" type="checkbox"> Supports</label>
-            <label><input id="reaction-insightful" type="checkbox"> Insightful</label>
-            <label><input id="reaction-funny" type="checkbox"> Funny</label>
-            <label><input id="reaction-comment" type="checkbox"> Comments</label>
-            <label><input id="reaction-repost" type="checkbox"> Reposts</label>
-          </div>
-        </fieldset>
       </section>
 
-      <section class="settings-section">
+      <section class="settings-section settings-card highlight">
         <div class="section-heading">
-          <h2>Blocked People & Brands</h2>
-          <p>Always collapse posts from these people or brands (one per line). This blocks:<br>• Their original posts • Posts they react to (if reaction filters enabled) • Posts they comment on</p>
+          <h2>Want custom toggles?</h2>
+          <p>Use the Stylus CSS generator for a configurable stylesheet. That path is more flexible and keeps the extension runtime even smaller.</p>
         </div>
-        <fieldset>
-          <label for="blocked-entities">Blocked names:</label>
-          <textarea id="blocked-entities" rows="5" placeholder="e.g.\nJean Seely\nMark Cuban\nLinkedIn News\nSalesforce"></textarea>
-        </fieldset>
+        <div class="actions">
+          <a class="button" href="docs/css-generator.html" target="_blank" rel="noreferrer">Open CSS Generator</a>
+        </div>
       </section>
 
-      <div class="actions">
-        <button id="save" type="button">Save</button>
-      </div>
-
-      <p id="status" role="status"></p>
+      <section class="settings-section settings-card">
+        <div class="section-heading">
+          <h2>Debug tip</h2>
+          <p>If a card is missed, LinkedIn probably changed its markup. The static stylesheet intentionally favors less code and less page interference over perfect matching.</p>
+        </div>
+      </section>
     </main>
-
-    <script src="options.js"></script>
   </body>
 </html>

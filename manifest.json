@@ -2,8 +2,7 @@
   "manifest_version": 3,
   "name": "JLI LinkedIn Declutter",
   "description": "Locally hides and collapses LinkedIn feed and notification clutter.",
-  "version": "1.0.0",
-  "permissions": ["storage"],
+  "version": "1.3.0",
   "icons": {
     "128": "assets/icon-128.png"
   },
@@ -16,12 +15,6 @@
     {
       "matches": ["https://www.linkedin.com/*"],
       "css": ["content.css"],
-      "js": [
-        "content/core.js",
-        "content/features/clean-feed.js",
-        "content/features/notifications.js",
-        "content/main.js"
-      ],
       "run_at": "document_idle"
     }
   ]
