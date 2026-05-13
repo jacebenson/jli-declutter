@@ -6,8 +6,9 @@
   "author": "",
   "type": "commonjs",
   "scripts": {
-    "check": "node --check scripts/build-zip.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))\"",
+    "generate:css-generator": "node scripts/generate-css-generator.js",
+    "check": "node --check scripts/build-zip.js && node --check scripts/generate-css-generator.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))\"",
     "zip": "node scripts/build-zip.js",
-    "build": "npm run check && npm run zip"
+    "build": "npm run generate:css-generator && npm run check && npm run zip"
   }
 }

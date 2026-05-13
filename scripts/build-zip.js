@@ -12,6 +12,7 @@ const files = [
   "manifest.json",
   "assets",
   "content.css",
+  "content-android.css",
   "docs/css-generator.html",
   "options.html",
   "options.css",

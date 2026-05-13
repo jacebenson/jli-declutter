@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JLI Declutter - CSS Generator for Stylus</title>
+  <title>JLI Declutter - Stylus CSS</title>
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 800px;
+      max-width: 920px;
       margin: 0 auto;
       padding: 40px 20px;
       line-height: 1.6;
@@ -16,6 +16,7 @@
       background: #f5f5f5;
     }
     h1 { margin-bottom: 10px; color: #0a66c2; }
+    h2 { margin-top: 0; }
     .subtitle { color: #666; margin-bottom: 30px; }
     .section {
       background: white;
@@ -24,28 +25,10 @@
       margin-bottom: 20px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .section h2 { margin-top: 0; font-size: 1.2em; }
-    .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-    }
-    label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: background 0.2s;
-    }
-    label:hover { background: #f0f0f0; }
-    input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
     textarea {
       width: 100%;
-      min-height: 400px;
-      font-family: "SF Mono", Monaco, monospace;
+      min-height: 460px;
+      font-family: "SF Mono", Monaco, Consolas, monospace;
       font-size: 13px;
       padding: 16px;
       border: 1px solid #ddd;
@@ -57,6 +40,7 @@
       display: flex;
       gap: 12px;
       margin-top: 16px;
+      flex-wrap: wrap;
     }
     button {
       padding: 12px 24px;
@@ -67,15 +51,9 @@
       font-weight: 600;
       transition: all 0.2s;
     }
-    .btn-primary {
-      background: #0a66c2;
-      color: white;
-    }
+    .btn-primary { background: #0a66c2; color: white; }
     .btn-primary:hover { background: #084e96; }
-    .btn-secondary {
-      background: #e0e0e0;
-      color: #333;
-    }
+    .btn-secondary { background: #e0e0e0; color: #333; }
     .btn-secondary:hover { background: #d0d0d0; }
     .instructions {
       background: #e3f2fd;
@@ -83,626 +61,361 @@
       border-radius: 8px;
       margin-bottom: 20px;
     }
+    .note {
+      background: #fff4e5;
+      border-left: 4px solid #f5a623;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
     .instructions ol { margin: 8px 0; padding-left: 24px; }
     .instructions li { margin: 8px 0; }
-    .hidden { display: none; }
-    #blockedList {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: inherit;
-      margin-top: 8px;
-    }
-    .note {
-      font-size: 0.9em;
-      color: #666;
-      margin-top: 8px;
-    }
+    code { background: #eef0f2; padding: 2px 5px; border-radius: 4px; }
   </style>
 </head>
 <body>
   <h1>🔗 JLI LinkedIn Declutter</h1>
-  <p class="subtitle">CSS Generator for Stylus / User Stylesheets</p>
+  <p class="subtitle">Stylus stylesheets for desktop LinkedIn and Android mobile web LinkedIn</p>
 
   <div class="instructions">
     <strong>How to use:</strong>
     <ol>
-      <li>Install the <a href="https://addons.mozilla.org/en-US/firefox/addon/styl-us/" target="_blank">Stylus</a> extension (Firefox/Chrome)</li>
-      <li>Configure your preferences below</li>
-      <li>Click "Generate CSS"</li>
-      <li>Copy the generated CSS</li>
-      <li>In Stylus, create a new style for <code>linkedin.com</code></li>
-      <li>Paste the CSS and save</li>
+      <li>Install <a href="https://add0n.com/stylus.html" target="_blank" rel="noopener">Stylus</a>.</li>
+      <li>Create a new style for <code>linkedin.com</code>.</li>
+      <li>Use the desktop sheet on desktop browsers. Use the Android sheet on Android/mobile web.</li>
+      <li>Copy the matching CSS below, paste it into Stylus, and save.</li>
     </ol>
   </div>
 
-  <div class="section">
-    <h2>Feed Cleanup</h2>
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="hideNews" checked> Hide LinkedIn News</label>
-      <label><input type="checkbox" id="hideAds" checked> Hide Right-Rail Ads</label>
-      <label><input type="checkbox" id="collapsePromoted" checked> Collapse Promoted Posts</label>
-      <label><input type="checkbox" id="collapseSuggested" checked> Collapse Suggested Posts</label>
-      <label><input type="checkbox" id="hideJobs" checked> Hide Job Recommendations</label>
-      <label><input type="checkbox" id="collapseFollows" checked> Collapse Recommended Follows</label>
-    </div>
+  <div class="note">
+    <strong>No choices.</strong> The desktop stylesheet mirrors the packaged extension <code>content.css</code>.
+    The Android stylesheet is generated from <code>content-android.css</code> because mobile LinkedIn uses different markup
+    and hover/collapse behavior is unreliable on touch screens.
   </div>
 
   <div class="section">
-    <h2>Reaction Filtering (Collapse These)</h2>
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="collapseLikes" checked> Likes</label>
-      <label><input type="checkbox" id="collapseLoves" checked> Loves</label>
-      <label><input type="checkbox" id="collapseCelebrate" checked> Celebrates</label>
-      <label><input type="checkbox" id="collapseSupport" checked> Supports</label>
-      <label><input type="checkbox" id="collapseInsightful" checked> Insightful</label>
-      <label><input type="checkbox" id="collapseFunny" checked> Funny</label>
-    </div>
-    <div class="note">Comments and reposts are shown by default (not collapsed)</div>
-  </div>
+    <h2>Desktop CSS — matches packaged <code>content.css</code></h2>
+    <textarea id="desktopOutput" readonly>/* JLI LinkedIn Declutter - Desktop Stylus CSS, mirrors packaged content.css */
+/* Apply to: linkedin.com */
 
-  <div class="section">
-    <h2>Notification Cleanup</h2>
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="collapseReactionNotifs" checked> Collapse Reaction Notifications</label>
-      <label><input type="checkbox" id="collapseAnalytics" checked> Collapse Analytics Notifications</label>
-    </div>
-  </div>
+@-moz-document domain("linkedin.com") {
 
-  <div class="section">
-    <h2>Blocked Authors (One per line)</h2>
-    <textarea id="blockedList" placeholder="Enter names to block/collapse their posts...
-Example:
-John Doe
-Jane Smith
-Marketing Guru"></textarea>
-    <div class="note">Posts by these authors will be collapsed</div>
-  </div>
+/*
+ * JLI LinkedIn Declutter — CSS-only runtime
+ *
+ * No JavaScript, no DOM rewriting, no custom attributes, no inserted nodes.
+ * These rules use stable-ish LinkedIn attributes and structural selectors.
+ */
 
-  <div class="section">
-    <h2>Generated CSS</h2>
-    <div class="button-group">
-      <button class="btn-primary" onclick="generateCSS()">Generate CSS</button>
-      <button class="btn-secondary" onclick="copyCSS()">Copy to Clipboard</button>
-      <button class="btn-secondary" onclick="downloadCSS()">Download .css</button>
-    </div>
-    <textarea id="output" readonly placeholder="Click 'Generate CSS' to create your stylesheet..."></textarea>
-  </div>
-
-  <script>
-    // CSS templates
-    const CSS_TEMPLATES = {
-      hideNews: `/* Hide LinkedIn News */
-section:has(> div h2 span:first-child),
-aside:has(> div h2 span:first-child),
-[role="complementary"]:has(h2) {
-  display: none !important;
-}`,
-
-      hideAds: `/* Hide Right-Rail Ads */
+/* Hide right-rail ads/iframes. */
 iframe[title="advertisement"],
 iframe[componentkey*="feed_ad"],
 iframe[src*="ads"] {
   display: none !important;
-}`,
+}
 
-      collapsePromoted: `/* Collapse Promoted Posts
-   Pure CSS cannot match visible text. These rules target LinkedIn labels
-   when they appear in accessibility/media attributes. */
-[role="listitem"]:has([aria-label*="Promoted" i]),
-[role="listitem"]:has([aria-label*="Sponsored" i]),
-[role="listitem"]:has([alt*="Sponsored Content" i]),
-[role="listitem"]:has([title*="Sponsored" i]),
-[role="article"]:has([aria-label*="Promoted" i]),
-[role="article"]:has([aria-label*="Sponsored" i]),
-[role="article"]:has([alt*="Sponsored Content" i]),
-[role="article"]:has([title*="Sponsored" i]),
-/* Aggressive fallback: LinkedIn often renders "Promoted" as plain text only.
-   Sponsored posts commonly have a header Follow button plus a feed-post wrapper. */
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div button[aria-label^="Follow " i]) {
+/* Hide LinkedIn News / right rail modules. Conservative structural cleanup. */
+section:has(&gt; div h2 span:first-child),
+aside:has(&gt; div h2 span:first-child),
+[role="complementary"]:has(h2) {
+  display: none !important;
+}
+
+/* Shared collapse label styling. */
+[role="listitem"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div button[aria-label^="Follow " i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div + hr),
+  :has([aria-label*="likes this" i]),
+  :has([aria-label*="liked this" i]),
+  :has([title*="likes this" i]),
+  :has([title*="liked this" i])
+),
+[role="article"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i])
+),
+.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
+.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]),
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]),
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]),
+.nt-card:has([data-test-icon="ui-chart"]) {
   max-height: 40px !important;
   overflow: hidden !important;
   position: relative !important;
 }
 
-[role="listitem"]:has([aria-label*="Promoted" i])::before,
-[role="listitem"]:has([aria-label*="Sponsored" i])::before,
-[role="listitem"]:has([alt*="Sponsored Content" i])::before,
-[role="listitem"]:has([title*="Sponsored" i])::before,
-[role="article"]:has([aria-label*="Promoted" i])::before,
-[role="article"]:has([aria-label*="Sponsored" i])::before,
-[role="article"]:has([alt*="Sponsored Content" i])::before,
-[role="article"]:has([title*="Sponsored" i])::before,
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div button[aria-label^="Follow " i])::before {
+/* Feed promoted/sponsored/suggested labels. */
+[role="listitem"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div button[aria-label^="Follow " i])
+)::before,
+[role="article"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i])
+)::before {
   content: "[Promoted - hover to expand]";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   padding: 10px;
   background: #f3f2ef;
+  color: #000 !important;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px !important;
   line-height: 20px !important;
-  color: #000 !important;
   z-index: 1;
 }
 
-[role="listitem"]:has([aria-label*="Promoted" i]):hover,
-[role="listitem"]:has([aria-label*="Sponsored" i]):hover,
-[role="listitem"]:has([alt*="Sponsored Content" i]):hover,
-[role="listitem"]:has([title*="Sponsored" i]):hover,
-[role="article"]:has([aria-label*="Promoted" i]):hover,
-[role="article"]:has([aria-label*="Sponsored" i]):hover,
-[role="article"]:has([alt*="Sponsored Content" i]):hover,
-[role="article"]:has([title*="Sponsored" i]):hover,
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div button[aria-label^="Follow " i]):hover {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-[role="listitem"]:has([aria-label*="Promoted" i]):hover::before,
-[role="listitem"]:has([aria-label*="Sponsored" i]):hover::before,
-[role="listitem"]:has([alt*="Sponsored Content" i]):hover::before,
-[role="listitem"]:has([title*="Sponsored" i]):hover::before,
-[role="article"]:has([aria-label*="Promoted" i]):hover::before,
-[role="article"]:has([aria-label*="Sponsored" i]):hover::before,
-[role="article"]:has([alt*="Sponsored Content" i]):hover::before,
-[role="article"]:has([title*="Sponsored" i]):hover::before,
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div button[aria-label^="Follow " i]):hover::before {
-  display: none !important;
-}`,
-
-      collapseSuggested: `/* Collapse Suggested Posts */
-[role="listitem"]:has([aria-label*="Suggested" i]),
-[role="listitem"]:has([title*="Suggested" i]),
-[role="article"]:has([aria-label*="Suggested" i]),
-[role="article"]:has([title*="Suggested" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-[role="listitem"]:has([aria-label*="Suggested" i])::before,
-[role="listitem"]:has([title*="Suggested" i])::before,
-[role="article"]:has([aria-label*="Suggested" i])::before,
-[role="article"]:has([title*="Suggested" i])::before {
+[role="listitem"]:is(:has([aria-label*="Suggested" i]), :has([title*="Suggested" i]))::before,
+[role="article"]:is(:has([aria-label*="Suggested" i]), :has([title*="Suggested" i]))::before {
   content: "[Suggested - hover to expand]";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   padding: 10px;
   background: #f3f2ef;
+  color: #000 !important;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px !important;
   line-height: 20px !important;
-  color: #000 !important;
   z-index: 1;
 }
 
-[role="listitem"]:has([aria-label*="Suggested" i]):hover,
-[role="listitem"]:has([title*="Suggested" i]):hover,
-[role="article"]:has([aria-label*="Suggested" i]):hover,
-[role="article"]:has([title*="Suggested" i]):hover {
+/* Social/reaction feed posts. */
+[role="listitem"]:is(
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div + hr),
+  :has([aria-label*="likes this" i]),
+  :has([aria-label*="liked this" i]),
+  :has([title*="likes this" i]),
+  :has([title*="liked this" i])
+)::before {
+  content: "[Social/reaction post - hover to expand]";
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 10px;
+  background: #f3f2ef;
+  color: #000 !important;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  z-index: 1;
+}
+
+/* Notifications. */
+.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before {
+  content: "[Reaction notification - hover to expand]";
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 10px;
+  background: #f3f2ef;
+  color: #000 !important;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  z-index: 1;
+}
+
+.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"])::before,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"])::before,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"])::before,
+.nt-card:has([data-test-icon="ui-chart"])::before {
+  content: "[Analytics notification - hover to expand]";
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 10px;
+  background: #f3f2ef;
+  color: #000 !important;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  z-index: 1;
+}
+
+/* Hover expands collapsed items and reveals original content. */
+[role="listitem"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div button[aria-label^="Follow " i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div + hr),
+  :has([aria-label*="likes this" i]),
+  :has([aria-label*="liked this" i]),
+  :has([title*="likes this" i]),
+  :has([title*="liked this" i])
+):hover,
+[role="article"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i])
+):hover,
+.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
+.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
+.nt-card:has([data-test-icon="ui-chart"]):hover {
   max-height: none !important;
   overflow: visible !important;
 }
 
-[role="listitem"]:has([aria-label*="Suggested" i]):hover::before,
-[role="listitem"]:has([title*="Suggested" i]):hover::before,
-[role="article"]:has([aria-label*="Suggested" i]):hover::before,
-[role="article"]:has([title*="Suggested" i]):hover::before {
+[role="listitem"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div button[aria-label^="Follow " i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i]),
+  :has(&gt; div[data-display-contents="true"] &gt; div[componentkey] &gt; h2 + div + hr),
+  :has([aria-label*="likes this" i]),
+  :has([aria-label*="liked this" i]),
+  :has([title*="likes this" i]),
+  :has([title*="liked this" i])
+):hover::before,
+[role="article"]:is(
+  :has([aria-label*="Promoted" i]),
+  :has([aria-label*="Sponsored" i]),
+  :has([alt*="Sponsored Content" i]),
+  :has([title*="Sponsored" i]),
+  :has([aria-label*="Suggested" i]),
+  :has([title*="Suggested" i])
+):hover::before,
+.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
+.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
+article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
+div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
+.nt-card:has([data-test-icon="ui-chart"]):hover::before {
   display: none !important;
-}`,
+}
 
-      hideJobs: `/* Hide Job Recommendations
-   LinkedIn renders the title as plain text, so target stable job carousel links/attrs. */
+/* Hide job recommendation feed cards. */
 [role="listitem"]:has(a[href*="/jobs/collections/recommended/"]),
 [role="listitem"]:has([data-testid="carousel-container"] a[href*="/jobs/collections/recommended/"]),
 [role="listitem"]:has([data-testid="carousel"]),
 [role="region"]:has(a[href*="/jobs/collections/recommended/"]) {
   display: none !important;
-}`,
-
-      collapseFollows: `/* Collapse Recommended Follows */
-[role="listitem"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]),
-[role="region"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  position: relative !important;
 }
 
-[role="listitem"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i])::before,
-[role="region"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i])::before {
-  content: "[Recommended Follows - hover to expand]";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background: #f3f2ef;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  color: #000 !important;
-  z-index: 1;
-}
+} /* end @-moz-document */
+</textarea>
+    <div class="button-group">
+      <button class="btn-primary" onclick="copyCSS(event, 'desktopOutput')">Copy Desktop CSS</button>
+      <button class="btn-secondary" onclick="downloadCSS('desktopOutput', 'jli-linkedin-declutter-desktop.css')">Download Desktop .css</button>
+    </div>
+  </div>
 
-[role="listitem"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]):hover,
-[role="region"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]):hover {
-  max-height: none !important;
-  overflow: visible !important;
-}
+  <!--
+  Android Mobile CSS is intentionally hidden for now.
+  The source remains in content-android.css, but the rules need more testing before
+  exposing them on this page.
 
-[role="listitem"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]):hover::before,
-[role="region"]:has([aria-label*="Recommended for you" i]):has(button[aria-label^="Follow " i]):hover::before {
-  display: none !important;
-}`
-    };
-
-    const REACTION_CSS = {
-      collapseLikes: `/* Collapse Like Reactions
-   LinkedIn often renders "Name likes this" as plain text, which CSS cannot match.
-   The first rule below is a structural fallback for social-context feed posts:
-   Feed post heading -> social context line -> divider -> actual post. */
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div + hr),
-[role="listitem"]:has([aria-label*="likes this" i]),
-[role="listitem"]:has([aria-label*="liked this" i]),
-[role="listitem"]:has([title*="likes this" i]),
-[role="listitem"]:has([title*="liked this" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div + hr)::before,
-[role="listitem"]:has([aria-label*="likes this" i])::before,
-[role="listitem"]:has([aria-label*="liked this" i])::before,
-[role="listitem"]:has([title*="likes this" i])::before,
-[role="listitem"]:has([title*="liked this" i])::before {
-  content: "[Social/reaction post - hover to expand]";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background: #f3f2ef;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  color: #000 !important;
-  z-index: 1;
-}
-
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div + hr):hover,
-[role="listitem"]:has([aria-label*="likes this" i]):hover,
-[role="listitem"]:has([aria-label*="liked this" i]):hover,
-[role="listitem"]:has([title*="likes this" i]):hover,
-[role="listitem"]:has([title*="liked this" i]):hover {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-[role="listitem"]:has(> div[data-display-contents="true"] > div[componentkey] > h2 + div + hr):hover::before,
-[role="listitem"]:has([aria-label*="likes this" i]):hover::before,
-[role="listitem"]:has([aria-label*="liked this" i]):hover::before,
-[role="listitem"]:has([title*="likes this" i]):hover::before,
-[role="listitem"]:has([title*="liked this" i]):hover::before {
-  display: none !important;
-}`,
-
-      collapseLoves: `/* Collapse Love Reactions */
-[role="listitem"]:has([aria-label*="loves this" i]),
-[role="listitem"]:has([aria-label*="loved this" i]),
-[role="listitem"]:has([title*="loves this" i]),
-[role="listitem"]:has([title*="loved this" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-}
-
-[role="listitem"]:has([aria-label*="loves this" i]):hover,
-[role="listitem"]:has([aria-label*="loved this" i]):hover,
-[role="listitem"]:has([title*="loves this" i]):hover,
-[role="listitem"]:has([title*="loved this" i]):hover {
-  max-height: none !important;
-}`,
-
-      collapseCelebrate: `/* Collapse Celebrate Reactions */
-[role="listitem"]:has([aria-label*="celebrates this" i]),
-[role="listitem"]:has([aria-label*="celebrated this" i]),
-[role="listitem"]:has([title*="celebrates this" i]),
-[role="listitem"]:has([title*="celebrated this" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-}
-
-[role="listitem"]:has([aria-label*="celebrates this" i]):hover,
-[role="listitem"]:has([aria-label*="celebrated this" i]):hover,
-[role="listitem"]:has([title*="celebrates this" i]):hover,
-[role="listitem"]:has([title*="celebrated this" i]):hover {
-  max-height: none !important;
-}`,
-
-      collapseSupport: `/* Collapse Support Reactions */
-[role="listitem"]:has([aria-label*="supports this" i]),
-[role="listitem"]:has([aria-label*="supported this" i]),
-[role="listitem"]:has([title*="supports this" i]),
-[role="listitem"]:has([title*="supported this" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-}
-
-[role="listitem"]:has([aria-label*="supports this" i]):hover,
-[role="listitem"]:has([aria-label*="supported this" i]):hover,
-[role="listitem"]:has([title*="supports this" i]):hover,
-[role="listitem"]:has([title*="supported this" i]):hover {
-  max-height: none !important;
-}`,
-
-      collapseInsightful: `/* Collapse Insightful Reactions */
-[role="listitem"]:has([aria-label*="finds this insightful" i]),
-[role="listitem"]:has([aria-label*="found this insightful" i]),
-[role="listitem"]:has([title*="finds this insightful" i]),
-[role="listitem"]:has([title*="found this insightful" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-}
-
-[role="listitem"]:has([aria-label*="finds this insightful" i]):hover,
-[role="listitem"]:has([aria-label*="found this insightful" i]):hover,
-[role="listitem"]:has([title*="finds this insightful" i]):hover,
-[role="listitem"]:has([title*="found this insightful" i]):hover {
-  max-height: none !important;
-}`,
-
-      collapseFunny: `/* Collapse Funny Reactions */
-[role="listitem"]:has([aria-label*="finds this funny" i]),
-[role="listitem"]:has([aria-label*="found this funny" i]),
-[role="listitem"]:has([title*="finds this funny" i]),
-[role="listitem"]:has([title*="found this funny" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-}
-
-[role="listitem"]:has([aria-label*="finds this funny" i]):hover,
-[role="listitem"]:has([aria-label*="found this funny" i]):hover,
-[role="listitem"]:has([title*="finds this funny" i]):hover,
-[role="listitem"]:has([title*="found this funny" i]):hover {
-  max-height: none !important;
-}`
-    };
-
-    const NOTIF_CSS = {
-      collapseReactionNotifs: `/* Collapse Reaction Notifications
-   Text like "Oliver and 36 others reacted to..." is plain text, not an attribute.
-   Structural fallback: notification -> feed update headline -> social counts. */
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
-.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts),
-.nt-card:has([aria-label*="liked" i]),
-.nt-card:has([aria-label*="reacted" i]),
-[data-view-name="notification-card-container"]:has([aria-label*="liked" i]),
-[data-view-name="notification-card-container"]:has([aria-label*="reacted" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before,
-.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts)::before,
-.nt-card:has([aria-label*="liked" i])::before,
-.nt-card:has([aria-label*="reacted" i])::before,
-[data-view-name="notification-card-container"]:has([aria-label*="liked" i])::before,
-[data-view-name="notification-card-container"]:has([aria-label*="reacted" i])::before {
-  content: "[Reaction notification - hover to expand]";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background: #f3f2ef;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  color: #000 !important;
-  z-index: 1;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
-.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover,
-.nt-card:has([aria-label*="liked" i]):hover,
-.nt-card:has([aria-label*="reacted" i]):hover,
-[data-view-name="notification-card-container"]:has([aria-label*="liked" i]):hover,
-[data-view-name="notification-card-container"]:has([aria-label*="reacted" i]):hover {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
-.nt-card:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/feed/update/"]):has(.nt-social-counts):hover::before,
-.nt-card:has([aria-label*="liked" i]):hover::before,
-.nt-card:has([aria-label*="reacted" i]):hover::before,
-[data-view-name="notification-card-container"]:has([aria-label*="liked" i]):hover::before,
-[data-view-name="notification-card-container"]:has([aria-label*="reacted" i]):hover::before {
-  display: none !important;
-}`,
-
-      collapseAnalytics: `/* Collapse Analytics Notifications */
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]),
-.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]),
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]),
-.nt-card:has([data-test-icon="ui-chart"]),
-.nt-card:has([aria-label*="impressions" i]),
-.nt-card:has([aria-label*="profile viewers" i]),
-[data-view-name="notification-card-container"]:has([aria-label*="impressions" i]),
-[data-view-name="notification-card-container"]:has([aria-label*="profile viewers" i]) {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"])::before,
-.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"])::before,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"])::before,
-.nt-card:has([data-test-icon="ui-chart"])::before,
-.nt-card:has([aria-label*="impressions" i])::before,
-.nt-card:has([aria-label*="profile viewers" i])::before,
-[data-view-name="notification-card-container"]:has([aria-label*="impressions" i])::before,
-[data-view-name="notification-card-container"]:has([aria-label*="profile viewers" i])::before {
-  content: "[Analytics notification - hover to expand]";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background: #f3f2ef;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  color: #000 !important;
-  z-index: 1;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
-.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover,
-.nt-card:has([data-test-icon="ui-chart"]):hover,
-.nt-card:has([aria-label*="impressions" i]):hover,
-.nt-card:has([aria-label*="profile viewers" i]):hover,
-[data-view-name="notification-card-container"]:has([aria-label*="impressions" i]):hover,
-[data-view-name="notification-card-container"]:has([aria-label*="profile viewers" i]):hover {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-div[data-finite-scroll-hotkey-item]:has(article.nt-card a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
-.nt-card:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
-article[data-view-name="notification-card-container"]:has(a.nt-card__headline[href*="/analytics/post-summary/"]):hover::before,
-.nt-card:has([data-test-icon="ui-chart"]):hover::before,
-.nt-card:has([aria-label*="impressions" i]):hover::before,
-.nt-card:has([aria-label*="profile viewers" i]):hover::before,
-[data-view-name="notification-card-container"]:has([aria-label*="impressions" i]):hover::before,
-[data-view-name="notification-card-container"]:has([aria-label*="profile viewers" i]):hover::before {
-  display: none !important;
-}`
-    };
-
-    function generateCSS() {
-      let css = `/* JLI LinkedIn Declutter - Generated CSS */
-/* Generated: ${new Date().toLocaleString()} */
+  <div class="section">
+    <h2>Android Mobile CSS — generated from <code>content-android.css</code></h2>
+    <p>This sheet hides instead of collapses. It targets Android/mobile LinkedIn feed cards, sponsored cards, app upsells, and mobile social-context posts.</p>
+    <textarea id="androidOutput" readonly>/* JLI LinkedIn Declutter - Android Mobile Stylus CSS, generated from content-android.css */
 /* Apply to: linkedin.com */
 
-/* ============================================ */
-/* BASE STYLES                                  */
-/* ============================================ */
-
 @-moz-document domain("linkedin.com") {
-`;
 
-      // Feed cleanup
-      if (document.getElementById('hideNews').checked) {
-        css += '\n' + CSS_TEMPLATES.hideNews + '\n';
-      }
-      if (document.getElementById('hideAds').checked) {
-        css += '\n' + CSS_TEMPLATES.hideAds + '\n';
-      }
-      if (document.getElementById('collapsePromoted').checked) {
-        css += '\n' + CSS_TEMPLATES.collapsePromoted + '\n';
-      }
-      if (document.getElementById('collapseSuggested').checked) {
-        css += '\n' + CSS_TEMPLATES.collapseSuggested + '\n';
-      }
-      if (document.getElementById('hideJobs').checked) {
-        css += '\n' + CSS_TEMPLATES.hideJobs + '\n';
-      }
-      if (document.getElementById('collapseFollows').checked) {
-        css += '\n' + CSS_TEMPLATES.collapseFollows + '\n';
-      }
+/*
+ * JLI LinkedIn Declutter — Android/mobile web stylesheet
+ *
+ * Separate from desktop because mobile LinkedIn has different markup and touch
+ * devices do not have reliable hover-to-expand behavior.
+ */
 
-      // Reaction filtering
-      Object.keys(REACTION_CSS).forEach(key => {
-        if (document.getElementById(key).checked) {
-          css += '\n' + REACTION_CSS[key] + '\n';
-        }
-      });
+/* Hide mobile web "Use the LinkedIn app" upsell banner. */
+.upsell-bottom.mweb-app-upsell,
+.non-blocking-upsell[data-storage-key="non-blocking-upsell"],
+[role="dialog"][data-storage-key="non-blocking-upsell"]:has(a[href*="linkedinmobileapp.com"]) {
+  display: none !important;
+}
 
-      // Notification cleanup
-      Object.keys(NOTIF_CSS).forEach(key => {
-        if (document.getElementById(key).checked) {
-          css += '\n' + NOTIF_CSS[key] + '\n';
-        }
-      });
+/* Hide mobile sponsored/promoted feed cards. */
+li.feed-item:has(&gt; article.main-feed-activity-card[data-is-sponsored]),
+li.feed-item:has(&gt; article.main-feed-activity-card[data-sponsored-tracking-url]),
+article.main-feed-activity-card[data-is-sponsored],
+article.main-feed-activity-card[data-sponsored-tracking-url] {
+  display: none !important;
+}
 
-      // Blocked authors
-      const blockedText = document.getElementById('blockedList').value.trim();
-      if (blockedText) {
-        const blocked = blockedText.split('\n').map(n => n.trim()).filter(n => n);
-        if (blocked.length > 0) {
-          css += '\n/* Blocked Authors */\n';
-          blocked.forEach(name => {
-            // Generate CSS to collapse posts by this author
-            css += `\n/* Blocking: ${name} */\n`;
-            css += `[role="listitem"]:has(a[href*="/in/"][aria-label*="${name}" i]),\n`;
-            css += `[role="listitem"]:has([aria-label*="${name}" i]) {\n`;
-            css += `  max-height: 40px !important;\n`;
-            css += `  overflow: hidden !important;\n`;
-            css += `}\n`;
-            css += `[role="listitem"]:has(a[href*="/in/"][aria-label*="${name}" i]):hover,\n`;
-            css += `[role="listitem"]:has([aria-label*="${name}" i]):hover {\n`;
-            css += `  max-height: none !important;\n`;
-            css += `}\n`;
-          });
-        }
-      }
+/* Hide mobile social-context reaction cards such as "Name likes this".
+   Keep "commented on this" cards when LinkedIn includes a visible comment preview. */
+li.feed-item:has(&gt; article.main-feed-activity-card &gt; p.main-feed-activity-card__header):not(:has(.main-feed-activity-card__single-comment)),
+li.feed-item:has(&gt; article.main-feed-activity-card &gt; p.main-feed-activity-card__header a[data-tracking-control-name="feed_main-feed-card_feed-reaction-header"]):not(:has(.main-feed-activity-card__single-comment)) {
+  display: none !important;
+}
 
-      css += '\n} /* end @-moz-document */\n';
-      
-      document.getElementById('output').value = css;
-    }
+/* Hide mobile job recommendation modules when they expose stable job URLs. */
+li.feed-item:has(a[href*="/jobs/collections/recommended/"]),
+[role="region"]:has(a[href*="/jobs/collections/recommended/"]) {
+  display: none !important;
+}
 
-    function copyCSS() {
-      const output = document.getElementById('output');
+} /* end @-moz-document */
+</textarea>
+    <div class="button-group">
+      <button class="btn-primary" onclick="copyCSS(event, 'androidOutput')">Copy Android CSS</button>
+      <button class="btn-secondary" onclick="downloadCSS('androidOutput', 'jli-linkedin-declutter-android.css')">Download Android .css</button>
+    </div>
+  </div>
+  -->
+
+  <script>
+    function copyCSS(event, textareaId) {
+      const output = document.getElementById(textareaId);
       output.select();
       document.execCommand('copy');
-      
+
       const btn = event.target;
       const originalText = btn.textContent;
       btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = originalText, 2000);
+      setTimeout(() => { btn.textContent = originalText; }, 2000);
     }
 
-    function downloadCSS() {
-      const css = document.getElementById('output').value;
-      if (!css) {
-        alert('Please generate CSS first');
-        return;
-      }
-      
+    function downloadCSS(textareaId, filename) {
+      const css = document.getElementById(textareaId).value;
       const blob = new Blob([css], { type: 'text/css' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'jli-linkedin-declutter.css';
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
-
-    // Auto-generate on page load with defaults
-    window.addEventListener('DOMContentLoaded', generateCSS);
   </script>
 </body>
 </html>

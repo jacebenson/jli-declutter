@@ -1,0 +1,34 @@
+/*
+ * JLI LinkedIn Declutter — Android/mobile web stylesheet
+ *
+ * Separate from desktop because mobile LinkedIn has different markup and touch
+ * devices do not have reliable hover-to-expand behavior.
+ */
+
+/* Hide mobile web "Use the LinkedIn app" upsell banner. */
+.upsell-bottom.mweb-app-upsell,
+.non-blocking-upsell[data-storage-key="non-blocking-upsell"],
+[role="dialog"][data-storage-key="non-blocking-upsell"]:has(a[href*="linkedinmobileapp.com"]) {
+  display: none !important;
+}
+
+/* Hide mobile sponsored/promoted feed cards. */
+li.feed-item:has(> article.main-feed-activity-card[data-is-sponsored]),
+li.feed-item:has(> article.main-feed-activity-card[data-sponsored-tracking-url]),
+article.main-feed-activity-card[data-is-sponsored],
+article.main-feed-activity-card[data-sponsored-tracking-url] {
+  display: none !important;
+}
+
+/* Hide mobile social-context reaction cards such as "Name likes this".
+   Keep "commented on this" cards when LinkedIn includes a visible comment preview. */
+li.feed-item:has(> article.main-feed-activity-card > p.main-feed-activity-card__header):not(:has(.main-feed-activity-card__single-comment)),
+li.feed-item:has(> article.main-feed-activity-card > p.main-feed-activity-card__header a[data-tracking-control-name="feed_main-feed-card_feed-reaction-header"]):not(:has(.main-feed-activity-card__single-comment)) {
+  display: none !important;
+}
+
+/* Hide mobile job recommendation modules when they expose stable job URLs. */
+li.feed-item:has(a[href*="/jobs/collections/recommended/"]),
+[role="region"]:has(a[href*="/jobs/collections/recommended/"]) {
+  display: none !important;
+}
