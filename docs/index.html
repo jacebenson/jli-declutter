@@ -75,6 +75,31 @@
         background: color-mix(in srgb, Canvas 94%, CanvasText 6%);
       }
 
+      .warning {
+        border-color: color-mix(in srgb, #b7791f 60%, CanvasText 10%);
+        background: color-mix(in srgb, #b7791f 10%, Canvas 90%);
+      }
+
+      .risk-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+
+      .risk-table th,
+      .risk-table td {
+        padding: 10px 12px;
+        border: 1px solid color-mix(in srgb, CanvasText 14%, Canvas 86%);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .risk-table th {
+        background: color-mix(in srgb, CanvasText 8%, Canvas 92%);
+      }
+
       .muted {
         color: color-mix(in srgb, CanvasText 72%, Canvas 28%);
       }
@@ -158,6 +183,43 @@
         <h2>CSS Generator for Stylus</h2>
         <p>Want custom toggles or a standalone user stylesheet? Use the local CSS generator to create a Stylus-compatible stylesheet.</p>
         <a class="button" href="css-generator.html">Open CSS Generator</a>
+      </section>
+
+      <section class="card warning">
+        <h2>Risk and Detection Transparency</h2>
+        <p><strong>Use this with eyes open.</strong> LinkedIn’s User Agreement prohibits third-party tools and browser extensions that modify the appearance of LinkedIn, including hiding, covering, or obscuring ads. This project reduces clutter locally, but it may still violate LinkedIn’s terms.</p>
+        <p>Public reporting such as <a href="https://browsergate.eu/how-it-works/" rel="noreferrer">BrowserGate</a> describes LinkedIn systems that allegedly detect browser extensions by probing <code>chrome-extension://</code> resources and scanning the DOM for extension traces. This extension was changed to be CSS-only to reduce those obvious fingerprints.</p>
+        <table class="risk-table">
+          <thead>
+            <tr>
+              <th>Detection method</th>
+              <th>Current exposure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DOM scan for <code>chrome-extension://</code></td>
+              <td>Low. The extension does not inject extension URLs into LinkedIn’s DOM.</td>
+            </tr>
+            <tr>
+              <td>DOM scan for custom inserted nodes</td>
+              <td>Low. The extension does not add wrappers, buttons, scripts, or custom attributes to LinkedIn content.</td>
+            </tr>
+            <tr>
+              <td>Active extension probing</td>
+              <td>Lower risk. The extension does not declare <code>web_accessible_resources</code>, so LinkedIn pages should not be able to fetch internal files directly.</td>
+            </tr>
+            <tr>
+              <td>Computed CSS / visual effect detection</td>
+              <td>Possible. LinkedIn could inspect computed styles and notice that matching cards are collapsed or hidden.</td>
+            </tr>
+            <tr>
+              <td>Terms enforcement</td>
+              <td>Still possible. CSS-only reduces technical fingerprints; it does not make the behavior permitted by LinkedIn.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>The lower-risk choice is the standalone Stylus stylesheet generated above. The lowest-risk choice is not modifying LinkedIn at all. The practical choice depends on your tolerance for clutter versus account/platform risk.</p>
       </section>
 
       <section>
