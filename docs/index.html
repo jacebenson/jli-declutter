@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JLI LinkedIn Declutter</title>
-    <meta name="description" content="JLI LinkedIn Declutter is a CSS-only Chrome extension that hides and collapses LinkedIn feed and notification clutter.">
+    <meta name="description" content="JLI LinkedIn Declutter is a Chrome extension that hides and collapses LinkedIn feed and notification clutter locally.">
     <style>
       :root {
         color-scheme: light dark;
@@ -143,34 +143,33 @@
         <img src="assets/icon-128.png" alt="JLI LinkedIn Declutter icon">
         <div>
           <h1>JLI LinkedIn Declutter</h1>
-          <p class="muted">A CSS-only Chrome extension that hides and collapses distracting LinkedIn feed and notification clutter.</p>
+          <p class="muted">A Chrome extension that hides and collapses distracting LinkedIn feed and notification clutter locally.</p>
         </div>
       </header>
 
       <section id="privacy-policy">
         <h2>Single Purpose</h2>
-        <p>JLI LinkedIn Declutter locally hides and collapses distracting LinkedIn feed and notification clutter with a packaged stylesheet so users can browse LinkedIn with less noise.</p>
+        <p>JLI LinkedIn Declutter locally hides and collapses distracting LinkedIn feed and notification clutter with a packaged content script so users can browse LinkedIn with less noise.</p>
       </section>
 
       <section class="grid" aria-label="Feature summary">
         <article class="card">
           <h2>What It Does</h2>
           <ul>
-            <li>Hides LinkedIn News and right-rail clutter.</li>
-            <li>Hides right-rail ad iframes.</li>
             <li>Collapses promoted, sponsored, and suggested feed posts.</li>
             <li>Hides job recommendation feed cards.</li>
             <li>Collapses recommended follow modules.</li>
             <li>Collapses reaction and analytics notifications.</li>
-            <li>Uses CSS-only hover-to-expand cards.</li>
+            <li>Uses local hover-to-expand cards.</li>
           </ul>
         </article>
         <article class="card">
           <h2>What It Does Not Do</h2>
           <ul>
             <li>Does not use LinkedIn APIs.</li>
-            <li>Does not run JavaScript on LinkedIn pages.</li>
-            <li>Does not observe, add, move, or rewrite LinkedIn DOM nodes.</li>
+            <li>Does not use LinkedIn APIs.</li>
+            <li>Does not click buttons, like posts, follow people, or connect with people.</li>
+            <li>Does not send data to the developer or external servers.</li>
             <li>Does not send messages or post content.</li>
             <li>Does not click buttons, like posts, follow people, or connect with people.</li>
             <li>Does not load remote code.</li>
@@ -179,16 +178,10 @@
         </article>
       </section>
 
-      <section class="card">
-        <h2>CSS Generator for Stylus</h2>
-        <p>Want custom toggles or a standalone user stylesheet? Use the local CSS generator to create a Stylus-compatible stylesheet.</p>
-        <a class="button" href="css-generator.html">Open CSS Generator</a>
-      </section>
-
       <section class="card warning">
         <h2>Risk and Detection Transparency</h2>
         <p><strong>Use this with eyes open.</strong> LinkedIn’s User Agreement prohibits third-party tools and browser extensions that modify the appearance of LinkedIn, including hiding, covering, or obscuring ads. This project reduces clutter locally, but it may still violate LinkedIn’s terms.</p>
-        <p>Public reporting such as <a href="https://browsergate.eu/how-it-works/" rel="noreferrer">BrowserGate</a> describes LinkedIn systems that allegedly detect browser extensions by probing <code>chrome-extension://</code> resources and scanning the DOM for extension traces. This extension was changed to be CSS-only to reduce those obvious fingerprints.</p>
+        <p>Public reporting such as <a href="https://browsergate.eu/how-it-works/" rel="noreferrer">BrowserGate</a> describes LinkedIn systems that allegedly detect browser extensions by probing <code>chrome-extension://</code> resources and scanning the DOM for extension traces. This extension avoids network calls and account actions, but it does modify the page locally to collapse cards.</p>
         <table class="risk-table">
           <thead>
             <tr>
@@ -203,7 +196,7 @@
             </tr>
             <tr>
               <td>DOM scan for custom inserted nodes</td>
-              <td>Low. The extension does not add wrappers, buttons, scripts, or custom attributes to LinkedIn content.</td>
+              <td>Possible. The extension adds local labels to collapsed cards and notifications.</td>
             </tr>
             <tr>
               <td>Active extension probing</td>
@@ -215,30 +208,30 @@
             </tr>
             <tr>
               <td>Terms enforcement</td>
-              <td>Still possible. CSS-only reduces technical fingerprints; it does not make the behavior permitted by LinkedIn.</td>
+              <td>Still possible. Local-only behavior reduces data exposure; it does not make the behavior permitted by LinkedIn.</td>
             </tr>
           </tbody>
         </table>
-        <p>The lower-risk choice is the standalone Stylus stylesheet generated above. The lowest-risk choice is not modifying LinkedIn at all. The practical choice depends on your tolerance for clutter versus account/platform risk.</p>
+        <p>The lowest-risk choice is not modifying LinkedIn at all. The practical choice depends on your tolerance for clutter versus account/platform risk.</p>
       </section>
 
       <section>
         <h2>Privacy Policy</h2>
         <p>Last updated: May 10, 2026</p>
-        <p>The packaged extension does not process LinkedIn page content with JavaScript. It applies local CSS rules in the browser to hide or collapse matching clutter, such as promoted posts, sponsored-looking cards, suggested posts, recommendation modules, reaction notifications, and analytics notifications.</p>
+        <p>The packaged extension processes visible LinkedIn page text locally in the browser to classify and collapse matching clutter, such as promoted posts, suggested posts, recommendation modules, reaction notifications, and analytics notifications.</p>
         <p>The extension does not store configuration settings and does not request Chrome storage permission.</p>
-        <p>No analytics, advertising, tracking pixels, remote logging, or remote code are included. All CSS, HTML, and assets are packaged with the extension.</p>
+        <p>No analytics, advertising, tracking pixels, remote logging, or remote code are included. All JavaScript, CSS, HTML, and assets are packaged with the extension.</p>
       </section>
 
       <section>
         <h2>Permissions</h2>
         <p><strong>Storage:</strong> Not requested.</p>
-        <p><strong>LinkedIn host access:</strong> Required for <code>https://www.linkedin.com/*</code> so Chrome can apply the packaged stylesheet to LinkedIn pages. Access is limited to LinkedIn.</p>
+        <p><strong>LinkedIn host access:</strong> Required for <code>https://www.linkedin.com/*</code> so Chrome can run the packaged content script on LinkedIn pages. Access is limited to LinkedIn.</p>
       </section>
 
       <section>
         <h2>Deleting Data</h2>
-        <p>The packaged extension stores no local settings. Remove the extension from Chrome to remove the stylesheet.</p>
+        <p>The packaged extension stores no local settings. Remove the extension from Chrome to remove the content script.</p>
       </section>
     </main>
   </body>

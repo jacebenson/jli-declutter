@@ -10,13 +10,13 @@
     <main>
       <header>
         <h1>JLI Declutter</h1>
-        <p>CSS-only LinkedIn decluttering. No JavaScript runs on LinkedIn pages.</p>
+        <p>Local LinkedIn decluttering for feed and notification noise.</p>
       </header>
 
       <section class="settings-section settings-card">
         <div class="section-heading">
           <h2>What this extension does</h2>
-          <p>The packaged extension injects one static stylesheet on LinkedIn. It does not read page text, add nodes, move nodes, set attributes, observe DOM changes, click buttons, call APIs, or send data anywhere.</p>
+          <p>The packaged extension runs a local content script on LinkedIn. It reads visible page text to classify cards, collapses distracting items, watches for newly loaded items, and sends no data anywhere.</p>
         </div>
       </section>
 
@@ -27,27 +27,16 @@
             <li>Collapse promoted/sponsored-looking feed cards.</li>
             <li>Collapse social/reaction feed cards.</li>
             <li>Hide job recommendation carousels.</li>
-            <li>Hide right-rail ad iframes and broad right-rail clutter.</li>
             <li>Collapse reaction and analytics notifications.</li>
           </ul>
           <p>Collapsed cards expand on hover.</p>
         </div>
       </section>
 
-      <section class="settings-section settings-card highlight">
-        <div class="section-heading">
-          <h2>Want custom toggles?</h2>
-          <p>Use the Stylus CSS generator for a configurable stylesheet. That path is more flexible and keeps the extension runtime even smaller.</p>
-        </div>
-        <div class="actions">
-          <a class="button" href="docs/css-generator.html" target="_blank" rel="noreferrer">Open CSS Generator</a>
-        </div>
-      </section>
-
       <section class="settings-section settings-card">
         <div class="section-heading">
           <h2>Debug tip</h2>
-          <p>If a card is missed, LinkedIn probably changed its markup. The static stylesheet intentionally favors less code and less page interference over perfect matching.</p>
+          <p>If a card is missed, LinkedIn probably changed its markup or wording. The desktop runtime favors small detection-pattern updates over broad structural selectors.</p>
         </div>
       </section>
     </main>

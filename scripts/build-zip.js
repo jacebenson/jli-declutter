@@ -11,9 +11,8 @@ const zipPath = join(distDir, zipName);
 const files = [
   "manifest.json",
   "assets",
-  "content.css",
+  "content",
   "content-android.css",
-  "docs/css-generator.html",
   "options.html",
   "options.css",
   "README.md"
