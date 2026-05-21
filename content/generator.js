@@ -15,8 +15,21 @@
   let PAGE_TYPE = getPageType();
   let currentUrl = window.location.href;
   let observer = null;
-  const processedElements = new WeakSet();
-  const originalStyles = new WeakMap();
+  const processedElements = new Set();
+  const originalStyles = new Map();
+
+  // User-configurable default settings
+  const DEFAULTS = {
+    enabled: true,
+    collapsePromoted: true,
+    collapseReactions: true,
+    collapseSuggested: true,
+    collapseJobRecs: true,
+    collapseFollowRecs: true,
+    collapseAnalytics: true
+  };
+
+  let config = null;
 
   // Configuration
   const CONFIG = {
@@ -43,7 +56,7 @@
     
     // Notifications page configuration
     notifications: {
-      selector: 'main a[href*="/feed/update/"]',
+      selector: 'main a[href*="/feed/update/"], main a[href*="highlightedUpdateUrn"]',
       containerSelector: 'main',
       reactionPatterns: {
         reacted: /(\w+(?:\s+\w+)?)(?:\s+and\s+\d+\s+others)?\s+reacted\s+to/i,
@@ -178,6 +191,24 @@
     return PAGE_TYPE === 'notifications' 
       ? detectNotificationElement(element)
       : detectFeedElement(element);
+  }
+
+  /**
+   * Check if a detected type is enabled in user config
+   */
+  function isDetectionEnabled(detection) {
+    if (!config) return true;
+    if (!config.enabled) return false;
+    const map = {
+      promoted: 'collapsePromoted',
+      reaction: 'collapseReactions',
+      suggested: 'collapseSuggested',
+      'job-recs': 'collapseJobRecs',
+      'follow-recs': 'collapseFollowRecs',
+      analytics: 'collapseAnalytics'
+    };
+    const key = map[detection.type];
+    return key ? config[key] !== false : true;
   }
 
   /**
@@ -373,6 +404,7 @@
       }
       
       const detection = detectElement(element);
+      if (detection && !isDetectionEnabled(detection)) return;
       if (detection) {
         const label = generateLabel(detection);
         collapseElement(element, label);
@@ -437,26 +469,121 @@
       currentUrl = window.location.href;
       PAGE_TYPE = getPageType();
       log(`URL changed, switching to ${PAGE_TYPE} page scan`);
+      originalStyles.clear();
+      processedElements.clear();
 
       setTimeout(() => {
         scanAndProcess();
+        scheduleNotificationScan();
         setupMutationObserver();
       }, CONFIG.waitTime);
     }, 500);
   }
 
   /**
+   * Undo all collapses — used when config changes
+   */
+  function resetAllCollapsed() {
+    for (const element of originalStyles.keys()) {
+      const styles = originalStyles.get(element);
+      element.style.maxHeight = styles.maxHeight || '';
+      element.style.overflow = styles.overflow || '';
+      element.style.padding = styles.padding || '';
+      element.style.borderBottom = styles.borderBottom || '';
+      const label = element.querySelector('.jli-declutter-label');
+      if (label) label.remove();
+    }
+    originalStyles.clear();
+    processedElements.clear();
+  }
+
+  /**
+   * Load user config from chrome.storage
+   */
+  function loadConfig(callback) {
+    if (!chrome?.storage?.sync) {
+      config = { ...DEFAULTS };
+      if (callback) callback();
+      return;
+    }
+    chrome.storage.sync.get(DEFAULTS, (items) => {
+      if (chrome.runtime.lastError) {
+        config = { ...DEFAULTS };
+      } else {
+        config = items;
+      }
+      if (callback) callback();
+    });
+  }
+
+  /**
+   * Reload config from storage and re-apply
+   */
+  function reapplyConfig() {
+    if (!chrome?.storage?.sync) {
+      config = { ...DEFAULTS };
+    } else {
+      chrome.storage.sync.get(DEFAULTS, (items) => {
+        if (chrome.runtime.lastError) {
+          config = { ...DEFAULTS };
+        } else {
+          config = items;
+        }
+        log('Config reloaded, re-applying...');
+        resetAllCollapsed();
+        setTimeout(() => scanAndProcess(), CONFIG.waitTime);
+      });
+      return;
+    }
+    resetAllCollapsed();
+    setTimeout(() => scanAndProcess(), CONFIG.waitTime);
+  }
+
+  /**
+   * Watch for config changes from popup/options
+   */
+  function watchConfigChanges() {
+    // Direct message from popup (most reliable)
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.type === 'config-changed') {
+        reapplyConfig();
+        sendResponse({ success: true });
+      }
+    });
+    // Storage-based fallback
+    if (chrome?.storage?.onChanged) {
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area !== 'sync') return;
+        for (const key of Object.keys(DEFAULTS)) {
+          if (changes[key]) return reapplyConfig();
+        }
+      });
+    }
+  }
+
+  /**
    * Initialize
    */
-  function initialize() {
-    log(`Initializing JLI LinkedIn Declutter on ${PAGE_TYPE} page...`);
-
+  function scheduleNotificationScan(tries = 0) {
+    if (PAGE_TYPE !== 'notifications' || tries >= 5) return;
     setTimeout(() => {
-      scanAndProcess();
-    }, CONFIG.waitTime);
+      const count = scanAndProcess();
+      if (count === 0) {
+        log(`No notification cards found yet (attempt ${tries + 1}/5), retrying...`);
+        scheduleNotificationScan(tries + 1);
+      }
+    }, 2000);
+  }
 
-    setupMutationObserver();
-    watchUrlChanges();
+  function initialize() {
+    loadConfig(() => {
+      log(`Initializing JLI LinkedIn Declutter on ${PAGE_TYPE} page...`);
+      setTimeout(() => scanAndProcess(), CONFIG.waitTime);
+      scheduleNotificationScan();
+      setupMutationObserver();
+      watchUrlChanges();
+      watchConfigChanges();
+    });
   }
 
   // Run

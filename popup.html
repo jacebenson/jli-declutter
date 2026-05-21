@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <header>
+      <img src="assets/icon-128.png" alt="">
+      <h1>JLI Declutter</h1>
+    </header>
+
+    <div class="master-toggle">
+      <span class="master-status">Enable JLI Declutter</span>
+      <label class="switch">
+        <input type="checkbox" id="enabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="section" id="feed-section">
+      <div class="section-title">Feed</div>
+      <div class="toggle-row">
+        <label for="collapsePromoted">Promoted posts</label>
+        <label class="switch">
+          <input type="checkbox" id="collapsePromoted">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <label for="collapseReactions">Reactions (likes, loves, etc.)</label>
+        <label class="switch">
+          <input type="checkbox" id="collapseReactions">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <label for="collapseSuggested">Suggested posts</label>
+        <label class="switch">
+          <input type="checkbox" id="collapseSuggested">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <label for="collapseJobRecs">Job recommendations</label>
+        <label class="switch">
+          <input type="checkbox" id="collapseJobRecs">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <label for="collapseFollowRecs">Recommended follows</label>
+        <label class="switch">
+          <input type="checkbox" id="collapseFollowRecs">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section" id="notif-section">
+      <div class="section-title">Notifications</div>
+      <div class="toggle-row">
+        <label for="collapseAnalytics">Analytics (impressions, profile views)</label>
+        <label class="switch">
+          <input type="checkbox" id="collapseAnalytics">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <footer>
+      <a href="#" id="options-link">Open options page</a>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
