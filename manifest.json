@@ -6,7 +6,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "jli-declutter@jacebenson",
-      "strict_min_version": "109.0"
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "icons": {
@@ -18,7 +21,10 @@
     "default_icon": "assets/icon-128.png",
     "default_popup": "popup.html"
   },
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
