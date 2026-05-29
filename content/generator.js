@@ -72,24 +72,10 @@
   };
 
   /**
-   * Check if we're in developer mode
-   */
-  function isDeveloperMode() {
-    try {
-      const manifest = chrome?.runtime?.getManifest?.();
-      return !!manifest && !manifest.update_url;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Log helper
+   * Log helper — always on in content scripts (invisible to normal users)
    */
   function log(message, ...args) {
-    if (isDeveloperMode()) {
-      console.log(`${CONFIG.logPrefix} ${message}`, ...args);
-    }
+    console.log(`${CONFIG.logPrefix} ${message}`, ...args);
   }
 
   /**

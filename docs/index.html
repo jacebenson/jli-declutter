@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JLI LinkedIn Declutter</title>
-    <meta name="description" content="JLI LinkedIn Declutter is a Chrome extension that hides and collapses LinkedIn feed and notification clutter locally.">
+    <meta name="description" content="JLI LinkedIn Declutter is a browser extension that hides and collapses LinkedIn feed and notification clutter locally.">
     <style>
       :root {
         color-scheme: light dark;
@@ -143,7 +143,7 @@
         <img src="assets/icon-128.png" alt="JLI LinkedIn Declutter icon">
         <div>
           <h1>JLI LinkedIn Declutter</h1>
-          <p class="muted">A Chrome extension that hides and collapses distracting LinkedIn feed and notification clutter locally.</p>
+          <p class="muted">A browser extension that hides and collapses distracting LinkedIn feed and notification clutter locally. Available for Chrome and Firefox.</p>
         </div>
       </header>
 
@@ -181,7 +181,7 @@
       <section class="card warning">
         <h2>Risk and Detection Transparency</h2>
         <p><strong>Use this with eyes open.</strong> LinkedIn’s User Agreement prohibits third-party tools and browser extensions that modify the appearance of LinkedIn, including hiding, covering, or obscuring ads. This project reduces clutter locally, but it may still violate LinkedIn’s terms.</p>
-        <p>Public reporting such as <a href="https://browsergate.eu/how-it-works/" rel="noreferrer">BrowserGate</a> describes LinkedIn systems that allegedly detect browser extensions by probing <code>chrome-extension://</code> resources and scanning the DOM for extension traces. This extension avoids network calls and account actions, but it does modify the page locally to collapse cards.</p>
+        <p>Public reporting such as <a href="https://browsergate.eu/how-it-works/" rel="noreferrer">BrowserGate</a> describes LinkedIn systems that allegedly detect browser extensions by probing extension-internal resources (e.g. <code>chrome-extension://</code> or <code>moz-extension://</code>) and scanning the DOM for extension traces. This extension avoids network calls and account actions, but it does modify the page locally to collapse cards.</p>
         <table class="risk-table">
           <thead>
             <tr>
@@ -191,7 +191,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>DOM scan for <code>chrome-extension://</code></td>
+              <td>DOM scan for extension protocol (<code>chrome-extension://</code> / <code>moz-extension://</code>)</td>
               <td>Low. The extension does not inject extension URLs into LinkedIn’s DOM.</td>
             </tr>
             <tr>
@@ -219,19 +219,19 @@
         <h2>Privacy Policy</h2>
         <p>Last updated: May 10, 2026</p>
         <p>The packaged extension processes visible LinkedIn page text locally in the browser to classify and collapse matching clutter, such as promoted posts, suggested posts, recommendation modules, reaction notifications, and analytics notifications.</p>
-        <p>The extension does not store configuration settings and does not request Chrome storage permission.</p>
+        <p>The extension does not store configuration settings and does not request the storage permission.</p>
         <p>No analytics, advertising, tracking pixels, remote logging, or remote code are included. All JavaScript, CSS, HTML, and assets are packaged with the extension.</p>
       </section>
 
       <section>
         <h2>Permissions</h2>
         <p><strong>Storage:</strong> Not requested.</p>
-        <p><strong>LinkedIn host access:</strong> Required for <code>https://www.linkedin.com/*</code> so Chrome can run the packaged content script on LinkedIn pages. Access is limited to LinkedIn.</p>
+        <p><strong>LinkedIn host access:</strong> Required for <code>https://www.linkedin.com/*</code> so the browser can run the packaged content script on LinkedIn pages. Access is limited to LinkedIn.</p>
       </section>
 
       <section>
         <h2>Deleting Data</h2>
-        <p>The packaged extension stores no local settings. Remove the extension from Chrome to remove the content script.</p>
+        <p>The packaged extension stores no local settings. Remove the extension from your browser to remove the content script.</p>
       </section>
     </main>
   </body>

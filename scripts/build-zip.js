@@ -13,6 +13,9 @@ const files = [
   "assets",
   "content",
   "content-android.css",
+  "popup.html",
+  "popup.css",
+  "popup.js",
   "options.html",
   "options.css",
   "README.md"

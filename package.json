@@ -1,7 +1,7 @@
 {
   "name": "jli-declutter",
   "version": "1.4.1",
-  "description": "Chrome extension for collapsing LinkedIn feed and notification clutter.",
+  "description": "Browser extension for collapsing LinkedIn feed and notification clutter.",
   "license": "ISC",
   "author": "",
   "type": "commonjs",

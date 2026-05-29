@@ -3,6 +3,12 @@
   "name": "JLI LinkedIn Declutter",
   "description": "Locally hides and collapses LinkedIn feed and notification clutter.",
   "version": "1.4.1",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "jli-declutter@jacebenson",
+      "strict_min_version": "109.0"
+    }
+  },
   "icons": {
     "128": "assets/icon-128.png"
   },
